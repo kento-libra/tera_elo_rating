@@ -9,6 +9,7 @@ def win_rate(Ra,Rb):
 class elo_calc:
     def __init__(self,player_dir,result_dir):
         self.C=32.0
+        self.speed=2
         self.player = pd.read_csv(player_dir)
         self.player = self.player.set_index('name')
         self.result = pd.read_csv(result_dir)
@@ -29,11 +30,11 @@ class elo_calc:
             #print(delta_rate)
             self.player.at[winner,'elo']+=delta_rate
             self.player.at[loser,'elo']-=delta_rate
-            self.history = pd.concat([self.history,self.player['elo']],axis=1)
-            if 2*i/self.N > 1/self.C:
+            #self.history = pd.concat([self.history,self.player['elo']],axis=1)
+            if self.speed*i/self.N > 1/self.C:
                 self.const_step()
-        print(self.player)
-        print(self.history)
+        #print(self.player)
+        #print(self.history)
 
     def const_step(self):
         self.C/=2
