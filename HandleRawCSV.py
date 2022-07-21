@@ -71,7 +71,7 @@ class HandleRawCSV:
                 kEnqueteTargetYear = 2021,
                 isWeightedByReadSegment=False,
                 NumRandomLosers=0,
-                division='True'
+                division=None
                 ):
         self.isWeightedByReadSegment=isWeightedByReadSegment
         self.NumRandomLosers=NumRandomLosers
@@ -90,13 +90,16 @@ class HandleRawCSV:
                                 .drop(columns=['title_code', 'title_3'])\
                                 .rename(columns={'title': 'title_3'})
         # 読み切りなどを削除 'year == @kEnqueteTargetYear'
-        enquete_data_digital_filtered = enquete_data_digital.query('not age.str.contains("\|")').query(division)\
+        if division is not None:
+            enquete_data_digital=enquete_data_digital.query(division)
+            enquete_data_merged=enquete_data_merged.query(division)
+        enquete_data_digital_filtered = enquete_data_digital.query('not age.str.contains("\|")')\
                                                     .groupby('title_1')\
                                                     .filter(lambda x: x['issue'].groupby(x['title_1']).nunique().max() >= kEnqueteTitleMinimumIssue)
         enquete_data_digital_filtered.loc[:,'read_segment'] = enquete_data_digital_filtered.loc[:,'read_segment'].replace('全部読んでいる', '25')
         enquete_data_digital_filtered.loc[:,'read_segment'] = enquete_data_digital_filtered.loc[:,'age'].replace('(\d+).*', r'\1',regex=True)
         enquete_data_digital_filtered.loc[:,'age'] = enquete_data_digital_filtered.loc[:,'age'].replace('(\d+).*', r'\1',regex=True)
-        enquete_data_filtered = enquete_data_merged.query(division)\
+        enquete_data_filtered = enquete_data_merged\
                                         .groupby('title_1')\
                                         .filter(lambda x: x['issue'].groupby(x['title_1']).nunique().max() >= kEnqueteTitleMinimumIssue)
         players_1 = enquete_data_filtered.groupby('title_1').groups.keys()
