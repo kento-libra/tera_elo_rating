@@ -2,6 +2,7 @@ from __future__ import division
 import pandas as pd
 import numpy as np
 import japanize_matplotlib
+import pickle
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import elo_calc
@@ -71,10 +72,11 @@ class HandleRawCSV:
                 kEnqueteTargetYear = 2021,
                 isWeightedByReadSegment=False,
                 NumRandomLosers=0,
-                division=None
+                division='All'
                 ):
         self.isWeightedByReadSegment=isWeightedByReadSegment
         self.NumRandomLosers=NumRandomLosers
+        self.division=division
         enquete_data = pd.read_csv(kEnqueteCsvPathPaperEnqueteData)
         enquete_data_digital = pd.read_csv(kEnqueteCsvPathDigitalEnqueteData)
         title_data = pd.read_csv(kEnqueteCsvPathTitleData)
@@ -90,7 +92,7 @@ class HandleRawCSV:
                                 .drop(columns=['title_code', 'title_3'])\
                                 .rename(columns={'title': 'title_3'})
         # 読み切りなどを削除 'year == @kEnqueteTargetYear'
-        if division is not None:
+        if division is not 'All':
             enquete_data_digital=enquete_data_digital.query(division)
             enquete_data_merged=enquete_data_merged.query(division)
         self.enquete_data_digital_filtered = enquete_data_digital.query('not age.str.contains("\|")')\
@@ -130,10 +132,18 @@ class HandleRawCSV:
         issue_num_paper = self.enquete_data_filtered['issue']
         issue_num_list = np.intersect1d(issue_num_digital.unique(), issue_num_paper.unique())
         issue_num_list.sort()
-        print('init done!')
+        print('Initing Done!')
     
     def fit(self):
         results_digital=TranslateResult(self.enquete_data_digital_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
-        results_paper=TranslateResult(self.enquete_data_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
+        #results_paper=TranslateResult(self.enquete_data_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
+        print('Translating Done!')
+        print(results_digital)
         self.elo_rating_digital = CalcElo(results_digital)
-        self.elo_rating_paper = CalcElo(results_paper)
+        #self.elo_rating_paper = CalcElo(results_paper)
+        print('Fitting Done!')
+    def savepickle(self,pickle_dir):
+        self.results_paper.to_pickle(pickle_dir+'isWeight:{}_numLoser:{}_div:{}_results_paper.pickle'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division))
+        self.results_digital.to_pickle(pickle_dir+'isWeight:{}_numLoser:{}_div:{}_results_digital.pickle'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division))
+        self.elo_rating_paper.to_pickle(pickle_dir + 'isWeight:{}_numLoser:{}_div:{}_elo_rating_paper_weight.pickle'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division))
+        self.elo_rating_digital.to_pickle(pickle_dir + 'isWeight:{}_numLoser:{}_div:{}_elo_rating_digital_weight.pickle'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division))
