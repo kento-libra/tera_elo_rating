@@ -40,9 +40,10 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
             ])
     results = pd.DataFrame(results, columns=['issue', 'win', 'lose','weight'])
     return results
+
 def CalcElo(results, issue_num_list):
     elo_rating = pd.DataFrame(columns = ['issue', 'name', 'rank', 'elo'])
-    for issue in tqdm(issue_num_list):
+    for issue in tqdm(set(issue_num_list)):
         results_by_issue = results.query('issue == @issue')[['win', 'lose','weight']]
         results_by_issue.reset_index(drop=True, inplace=True)
         # アンケートに登場するタイトルを抽出
@@ -143,7 +144,7 @@ class HandleRawCSV:
         #self.elo_rating_paper = CalcElo(results_paper, self.issue_num_list)
         print('Fitting Done!')
     def savepickle(self,pickle_dir):
-        
+
         head_common='isWeight:{}_numLoser:{}_div:{}_'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division)
 
         self.results_paper.to_pickle(pickle_dir + head_common +'results_paper.pickle')
