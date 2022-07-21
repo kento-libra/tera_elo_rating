@@ -7,7 +7,7 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import elo_calc
 
-issue_num_list=[]
+
 def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
     results = []
     unique_list=[]
@@ -40,7 +40,7 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
             ])
     results = pd.DataFrame(results, columns=['issue', 'win', 'lose','weight'])
     return results
-def CalcElo(results):
+def CalcElo(results, issue_num_list):
     elo_rating = pd.DataFrame(columns = ['issue', 'name', 'rank', 'elo'])
     for issue in tqdm(issue_num_list):
         results_by_issue = results.query('issue == @issue')[['win', 'lose','weight']]
@@ -130,9 +130,8 @@ class HandleRawCSV:
         # unique_list=pd.DataFrame(unique_list, columns=['list','issue'])
         issue_num_digital = self.enquete_data_digital_filtered['issue']
         issue_num_paper = self.enquete_data_filtered['issue']
-        issue_num_list = np.intersect1d(issue_num_digital.unique(), issue_num_paper.unique())
-        issue_num_list.sort()
-        print(issue_num_list)
+        self.issue_num_list = np.intersect1d(issue_num_digital.unique(), issue_num_paper.unique())
+        self.issue_num_list.sort()
         print('Initing Done!')
     
     def fit(self):
@@ -140,11 +139,12 @@ class HandleRawCSV:
         #results_paper=TranslateResult(self.enquete_data_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
         print('Translating Done!')
         print(results_digital)
-        self.elo_rating_digital = CalcElo(results_digital)
-        #self.elo_rating_paper = CalcElo(results_paper)
+        self.elo_rating_digital = CalcElo(results_digital, self.issue_num_list)
+        #self.elo_rating_paper = CalcElo(results_paper, self.issue_num_list)
         print('Fitting Done!')
     def savepickle(self,pickle_dir):
-        self.results_paper.to_pickle(pickle_dir+'isWeight:{}_numLoser:{}_div:{}_results_paper.pickle'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division))
-        self.results_digital.to_pickle(pickle_dir+'isWeight:{}_numLoser:{}_div:{}_results_digital.pickle'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division))
-        self.elo_rating_paper.to_pickle(pickle_dir + 'isWeight:{}_numLoser:{}_div:{}_elo_rating_paper_weight.pickle'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division))
-        self.elo_rating_digital.to_pickle(pickle_dir + 'isWeight:{}_numLoser:{}_div:{}_elo_rating_digital_weight.pickle'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division))
+        head_common='isWeight:{}_numLoser:{}_div:{}_'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division)
+        self.results_paper.to_pickle(pickle_dir + head_common +'results_paper.pickle')
+        self.results_digital.to_pickle(pickle_dir + head_common +'_results_digital.pickle')
+        self.elo_rating_paper.to_pickle(pickle_dir + head_common + '_elo_rating_paper_weight.pickle')
+        self.elo_rating_digital.to_pickle(pickle_dir + head_common +'_elo_rating_digital_weight.pickle')

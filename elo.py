@@ -3,11 +3,12 @@ import pandas
 import elo_calc
 import datetime
 import HandleRawCSV
-from constants import kEnqueteCsvPathPaperEnqueteData, kEnqueteCsvPathDigitalEnqueteData, kEnqueteCsvPathTitleData
+from constants import kEnqueteCsvPathPaperEnqueteData, kEnqueteCsvPathDigitalEnqueteData, kEnqueteCsvPathTitleData, kEnqueteEloPickleBase
 
 def main():
     mycsv=HandleRawCSV.HandleRawCSV(kEnqueteCsvPathPaperEnqueteData, kEnqueteCsvPathDigitalEnqueteData, kEnqueteCsvPathTitleData)
     mycsv.fit()
+    mycsv.savepickle(kEnqueteEloPickleBase)
     # myelo=elo_calc.elo_calc('player.csv','result.csv')
     # myelo.fit()
     # print(myelo.player)
