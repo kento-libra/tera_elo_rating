@@ -113,9 +113,9 @@ class HandleRawCSV:
 
         players = pd.DataFrame(all_players, columns=['name'])
         players = players.set_index('name')
-        enquete_data_digital_filtered['issue']=(enquete_data_digital_filtered['year'].astype(str)+enquete_data_digital_filtered['issue'].astype(str).str.zfill(2)).astype(int)
-        enquete_data_filtered['issue']=(enquete_data_filtered['year'].astype(str)+enquete_data_filtered['issue'].astype(str).str.zfill(2)).astype(int)
-        enquete_data_filtered['read_segment']=1
+        self.enquete_data_digital_filtered['issue']=(enquete_data_digital_filtered['year'].astype(str)+enquete_data_digital_filtered['issue'].astype(str).str.zfill(2)).astype(int)
+        self.enquete_data_filtered['issue']=(enquete_data_filtered['year'].astype(str)+enquete_data_filtered['issue'].astype(str).str.zfill(2)).astype(int)
+        self.enquete_data_filtered['read_segment']=1
         #issue_list=enquete_data_digital_filtered.loc[:,'issue'].unique()
         # unique_list=[]
         # for i in issue_list:
