@@ -93,28 +93,28 @@ class HandleRawCSV:
         if division is not None:
             enquete_data_digital=enquete_data_digital.query(division)
             enquete_data_merged=enquete_data_merged.query(division)
-        enquete_data_digital_filtered = enquete_data_digital.query('not age.str.contains("\|")')\
+        self.enquete_data_digital_filtered = enquete_data_digital.query('not age.str.contains("\|")')\
                                                     .groupby('title_1')\
                                                     .filter(lambda x: x['issue'].groupby(x['title_1']).nunique().max() >= kEnqueteTitleMinimumIssue)
-        enquete_data_digital_filtered.loc[:,'read_segment'] = enquete_data_digital_filtered.loc[:,'read_segment'].replace('全部読んでいる', '25')
-        enquete_data_digital_filtered.loc[:,'read_segment'] = enquete_data_digital_filtered.loc[:,'age'].replace('(\d+).*', r'\1',regex=True)
-        enquete_data_digital_filtered.loc[:,'age'] = enquete_data_digital_filtered.loc[:,'age'].replace('(\d+).*', r'\1',regex=True)
-        enquete_data_filtered = enquete_data_merged\
+        self.enquete_data_digital_filtered.loc[:,'read_segment'] = self.enquete_data_digital_filtered.loc[:,'read_segment'].replace('全部読んでいる', '25')
+        self.enquete_data_digital_filtered.loc[:,'read_segment'] = self.enquete_data_digital_filtered.loc[:,'age'].replace('(\d+).*', r'\1',regex=True)
+        self.enquete_data_digital_filtered.loc[:,'age'] = self.enquete_data_digital_filtered.loc[:,'age'].replace('(\d+).*', r'\1',regex=True)
+        self.enquete_data_filtered = enquete_data_merged\
                                         .groupby('title_1')\
                                         .filter(lambda x: x['issue'].groupby(x['title_1']).nunique().max() >= kEnqueteTitleMinimumIssue)
-        players_1 = enquete_data_filtered.groupby('title_1').groups.keys()
-        players_2 = enquete_data_filtered.groupby('title_2').groups.keys()
-        players_3 = enquete_data_filtered.groupby('title_3').groups.keys()
-        players_d1 = enquete_data_digital_filtered.groupby('title_1').groups.keys()
-        players_d2 = enquete_data_digital_filtered.groupby('title_2').groups.keys()
-        players_d3 = enquete_data_digital_filtered.groupby('title_3').groups.keys()
+        players_1 = self.enquete_data_filtered.groupby('title_1').groups.keys()
+        players_2 = self.enquete_data_filtered.groupby('title_2').groups.keys()
+        players_3 = self.enquete_data_filtered.groupby('title_3').groups.keys()
+        players_d1 = self.enquete_data_digital_filtered.groupby('title_1').groups.keys()
+        players_d2 = self.enquete_data_digital_filtered.groupby('title_2').groups.keys()
+        players_d3 = self.enquete_data_digital_filtered.groupby('title_3').groups.keys()
 
         all_players = players_1 | players_2 | players_3 | players_d1 | players_d2 | players_d3
 
         players = pd.DataFrame(all_players, columns=['name'])
         players = players.set_index('name')
-        self.enquete_data_digital_filtered['issue']=(enquete_data_digital_filtered['year'].astype(str)+enquete_data_digital_filtered['issue'].astype(str).str.zfill(2)).astype(int)
-        self.enquete_data_filtered['issue']=(enquete_data_filtered['year'].astype(str)+enquete_data_filtered['issue'].astype(str).str.zfill(2)).astype(int)
+        self.enquete_data_digital_filtered['issue']=(self.enquete_data_digital_filtered['year'].astype(str)+self.enquete_data_digital_filtered['issue'].astype(str).str.zfill(2)).astype(int)
+        self.enquete_data_filtered['issue']=(self.enquete_data_filtered['year'].astype(str)+self.enquete_data_filtered['issue'].astype(str).str.zfill(2)).astype(int)
         self.enquete_data_filtered['read_segment']=1
         #issue_list=enquete_data_digital_filtered.loc[:,'issue'].unique()
         # unique_list=[]
@@ -126,8 +126,8 @@ class HandleRawCSV:
         #     issue_unique_list=tmp.unique()
         #     unique_list.append([issue_unique_list,i])
         # unique_list=pd.DataFrame(unique_list, columns=['list','issue'])
-        issue_num_digital = enquete_data_digital_filtered['issue']
-        issue_num_paper = enquete_data_filtered['issue']
+        issue_num_digital = self.enquete_data_digital_filtered['issue']
+        issue_num_paper = self.enquete_data_filtered['issue']
         issue_num_list = np.intersect1d(issue_num_digital.unique(), issue_num_paper.unique())
         issue_num_list.sort()
         print('init done!')
