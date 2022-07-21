@@ -71,7 +71,7 @@ class HandleRawCSV:
                 kEnqueteTargetYear = 2021,
                 isWeightedByReadSegment=False,
                 NumRandomLosers=0,
-                division=''
+                division='True'
                 ):
         self.isWeightedByReadSegment=isWeightedByReadSegment
         self.NumRandomLosers=NumRandomLosers
@@ -113,7 +113,7 @@ class HandleRawCSV:
         enquete_data_digital_filtered['issue']=(enquete_data_digital_filtered['year'].astype(str)+enquete_data_digital_filtered['issue'].astype(str).str.zfill(2)).astype(int)
         enquete_data_filtered['issue']=(enquete_data_filtered['year'].astype(str)+enquete_data_filtered['issue'].astype(str).str.zfill(2)).astype(int)
         enquete_data_filtered['read_segment']=1
-        issue_list=enquete_data_digital_filtered.loc[:,'issue'].unique()
+        #issue_list=enquete_data_digital_filtered.loc[:,'issue'].unique()
         # unique_list=[]
         # for i in issue_list:
         #     issue_clip=enquete_data_digital_filtered.query('issue == {}'.format(i)).loc[:,'title_1':'title_3']
