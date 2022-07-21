@@ -48,7 +48,7 @@ class HandleRawCSV:
         all_players = players_1 | players_2 | players_3 | players_d1 | players_d2 | players_d3
 
         players = pd.DataFrame(all_players, columns=['name'])
-        players = players.set_index('name')]
+        players = players.set_index('name')
         enquete_data_digital_filtered['issue']=(enquete_data_digital_filtered['year'].astype(str)+enquete_data_digital_filtered['issue'].astype(str).str.zfill(2)).astype(int)
         enquete_data_filtered['issue']=(enquete_data_filtered['year'].astype(str)+enquete_data_filtered['issue'].astype(str).str.zfill(2)).astype(int)
         target_issue=202121
