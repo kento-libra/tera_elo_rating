@@ -143,7 +143,9 @@ class HandleRawCSV:
         #self.elo_rating_paper = CalcElo(results_paper, self.issue_num_list)
         print('Fitting Done!')
     def savepickle(self,pickle_dir):
+        
         head_common='isWeight:{}_numLoser:{}_div:{}_'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division)
+
         self.results_paper.to_pickle(pickle_dir + head_common +'results_paper.pickle')
         self.results_digital.to_pickle(pickle_dir + head_common +'_results_digital.pickle')
         self.elo_rating_paper.to_pickle(pickle_dir + head_common + '_elo_rating_paper_weight.pickle')
