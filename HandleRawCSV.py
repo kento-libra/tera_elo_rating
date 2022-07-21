@@ -41,27 +41,27 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
     results = pd.DataFrame(results, columns=['issue', 'win', 'lose','weight'])
     return results
 def CalcElo(results):
-        elo_rating = pd.DataFrame(columns = ['issue', 'name', 'rank', 'elo'])
-        for issue in tqdm(issue_num_list):
-            results_by_issue = results.query('issue == @issue')[['win', 'lose','weight']]
-            results_by_issue.reset_index(drop=True, inplace=True)
-            # アンケートに登場するタイトルを抽出
-            p_win = results_by_issue.groupby('win').groups.keys()
-            p_lose = results_by_issue.groupby('lose').groups.keys()
-            p_weight = results_by_issue.groupby('weight').groups.keys()
-            players_by_issue = pd.DataFrame(p_win | p_lose | p_weight, columns=['name'])
-            # Elo ratingを求める
-            elo = elo_calc.elo_calc(players_by_issue, results_by_issue)
-            elo.fit()
-            # ランキングの計算
-            res = elo.player
-            res['rank'] = res['elo'].rank(ascending=False, method='min')
-            # 週ごとのデータに追加
-            res['issue'] = issue
-            res.reset_index(inplace=True)
-            res = res[['issue', 'name', 'rank', 'elo']]
-            elo_rating = elo_rating.append(res, ignore_index=True)
-        return elo_rating
+    elo_rating = pd.DataFrame(columns = ['issue', 'name', 'rank', 'elo'])
+    for issue in tqdm(issue_num_list):
+        results_by_issue = results.query('issue == @issue')[['win', 'lose','weight']]
+        results_by_issue.reset_index(drop=True, inplace=True)
+        # アンケートに登場するタイトルを抽出
+        p_win = results_by_issue.groupby('win').groups.keys()
+        p_lose = results_by_issue.groupby('lose').groups.keys()
+        p_weight = results_by_issue.groupby('weight').groups.keys()
+        players_by_issue = pd.DataFrame(p_win | p_lose | p_weight, columns=['name'])
+        # Elo ratingを求める
+        elo = elo_calc.elo_calc(players_by_issue, results_by_issue)
+        elo.fit()
+        # ランキングの計算
+        res = elo.player
+        res['rank'] = res['elo'].rank(ascending=False, method='min')
+        # 週ごとのデータに追加
+        res['issue'] = issue
+        res.reset_index(inplace=True)
+        res = res[['issue', 'name', 'rank', 'elo']]
+        elo_rating = elo_rating.append(res, ignore_index=True)
+    return elo_rating
 
 class HandleRawCSV:
     def __init__(self,
@@ -132,6 +132,7 @@ class HandleRawCSV:
         issue_num_paper = self.enquete_data_filtered['issue']
         issue_num_list = np.intersect1d(issue_num_digital.unique(), issue_num_paper.unique())
         issue_num_list.sort()
+        print(issue_num_list)
         print('Initing Done!')
     
     def fit(self):
