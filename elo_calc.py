@@ -7,12 +7,12 @@ def win_rate(Ra,Rb):
     return 1/(10**((Rb-Ra)/400)+1)
 
 class elo_calc:
-    def __init__(self,player_dir,result_dir):
+    def __init__(self,player: pd.DataFrame, result: pd.DataFrame):
         self.C=32.0
         self.speed=2
-        self.player = pd.read_csv(player_dir)
+        self.player = player
         self.player = self.player.set_index('name')
-        self.result = pd.read_csv(result_dir)
+        self.result = result
         self.player['elo']=1500.0
         self.history = self.player['elo']
         self.N = len(self.result.index)
