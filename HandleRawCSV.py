@@ -25,15 +25,13 @@ class HandleRawCSV:
                 division=self.division, kEnqueteTitleMinimumIssue = kEnqueteTitleMinimumIssue)
         print('Initing Done!')
     
-    def fit(self):
+    def elo(self):
         results_digital=funcs.TranslateResult(self.enquete_data_digital_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
         results_paper=funcs.TranslateResult(self.enquete_data_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
         print('Translating Done!')
         self.elo_rating_digital = funcs.CalcElo(results_digital, self.issue_num_list)
         self.elo_rating_paper = funcs.CalcElo(results_paper, self.issue_num_list)
         print('Fitting Done!')
-    def savepickle(self,pickle_dir):
-        self.results_paper.to_pickle(pickle_dir + self.head_common +'results_paper.pickle')
-        self.results_digital.to_pickle(pickle_dir + self.head_common +'_results_digital.pickle')
-        self.elo_rating_paper.to_pickle(pickle_dir + self.head_common + '_elo_rating_paper_weight.pickle')
-        self.elo_rating_digital.to_pickle(pickle_dir + self.head_common +'_elo_rating_digital_weight.pickle')
+    def save_pickle(self,pickle_dir):
+        self.elo_rating_paper.to_pickle(pickle_dir + self.head_common + 'elo_rating_paper_weight.pickle')
+        self.elo_rating_digital.to_pickle(pickle_dir + self.head_common +'elo_rating_digital_weight.pickle')

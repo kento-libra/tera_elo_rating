@@ -66,6 +66,9 @@ def CalcElo(results, issue_num_list):
         elo_rating = elo_rating.append(res, ignore_index=True)
     return elo_rating
 
+def CalcVotes():
+    return
+
 filtered_digital_name='digital_filtered_raw.pickle'
 filtered_paper_name='paper_filtered_raw.pickle'
 issue_num_name='issue_num_list.npy'

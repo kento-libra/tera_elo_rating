@@ -7,8 +7,9 @@ from constants import kEnqueteCsvPathPaperEnqueteData, kEnqueteCsvPathDigitalEnq
 
 def main():
     mycsv=HandleRawCSV.HandleRawCSV(kEnqueteEloPickleBase)
-    mycsv.fit()
-    mycsv.savepickle(kEnqueteEloPickleBase)
+    mycsv.elo()
+    mycsv.save_pickle(kEnqueteEloPickleBase)
+
     # myelo=elo_calc.elo_calc('player.csv','result.csv')
     # myelo.fit()
     # print(myelo.player)
