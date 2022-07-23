@@ -1,9 +1,5 @@
 import pandas as pd
-import numpy as np
-import japanize_matplotlib
-import pickle
-from tqdm import tqdm
-import matplotlib.pyplot as plt
+import os
 import funcs
 
 class HandleRawCSV:
@@ -18,6 +14,7 @@ class HandleRawCSV:
         self.isWeightedByReadSegment=isWeightedByReadSegment
         self.NumRandomLosers=NumRandomLosers
         self.division=division
+        self.save_dir=save_dir
         #self.head_common='isWeight:{}_numLoser:{}_div:{}_'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division)
         self.enquete_data_digital_filtered, self.enquete_data_filtered, self.issue_num_list, self.head_common=\
             funcs.read_raw_csv(save_dir, isWeightedByReadSegment=self.isWeightedByReadSegment, NumRandomLosers=self.NumRandomLosers,\
@@ -25,18 +22,24 @@ class HandleRawCSV:
         print('Initing Done!')
     
     def elo(self):
-        results_digital=funcs.TranslateResult(self.enquete_data_digital_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
-        results_paper=funcs.TranslateResult(self.enquete_data_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
-        print('Translating Done!')
-        self.elo_rating_digital = funcs.CalcElo(results_digital, self.issue_num_list)
-        self.elo_rating_paper = funcs.CalcElo(results_paper, self.issue_num_list)
-        print('Fitting Done!')
+        if os.path.isfile(self.save_dir + self.head_common + 'elo_rating_paper_weight.pickle')\
+            and os.path.isfile(self.save_dir + self.head_common +'elo_rating_digital_weight.pickle'):
+            self.elo_rating_paper=pd.read_pickle(self.save_dir + self.head_common + 'elo_rating_paper_weight.pickle')
+            self.elo_rating_digital=pd.read_pickle(self.save_dir + self.head_common +'elo_rating_digital_weight.pickle')
+        else:
+            results_digital=funcs.TranslateResult(self.enquete_data_digital_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
+            results_paper=funcs.TranslateResult(self.enquete_data_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
+            print('Translating Done!')
+            self.elo_rating_digital = funcs.CalcElo(results_digital, self.issue_num_list)
+            self.elo_rating_paper = funcs.CalcElo(results_paper, self.issue_num_list)
+            print('Fitting Done!')
+            self.elo_rating_paper.to_pickle(self.save_dir + self.head_common + 'elo_rating_paper_weight.pickle')
+            self.elo_rating_digital.to_pickle(self.save_dir + self.head_common +'elo_rating_digital_weight.pickle')
 
-    def save_pickle(self,pickle_dir):
-        self.elo_rating_paper.to_pickle(pickle_dir + self.head_common + 'elo_rating_paper_weight.pickle')
-        self.elo_rating_digital.to_pickle(pickle_dir + self.head_common +'elo_rating_digital_weight.pickle')
+    def save_pickle(self):
+        
     
-    def MakeReference_v1(self,pickle_dir):
+    def MakeReference_v1(self):
         elo_rating_digital_frame=pd.DataFrame()
         for issue in self.issue_num_list:
             tmp_df=self.elo_rating_digital.query('issue==@issue')
@@ -45,4 +48,4 @@ class HandleRawCSV:
         elo_rating_digital_frame.columns=self.issue_num_list
         elo_rating_digital_frame_filtered = elo_rating_digital_frame.drop([1,'マッシュル-MASHLE-']).T.dropna(axis=1,thresh=30)
         self.elo_calc_list=~elo_rating_digital_frame_filtered.interpolate(limit=2).isna()
-        self.elo_calc_list.to_pickle( pickle_dir + self.head_common + 'elo_calc_list_v1')
+        self.elo_calc_list.to_pickle(self.save_dir + self.head_common + 'elo_calc_list_v1')
