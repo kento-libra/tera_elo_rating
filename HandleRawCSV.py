@@ -44,8 +44,11 @@ class HandleRawCSV:
     def votes(self):
         self.votes_paper=fn.CalcVotes(self.enquete_data_paper_filtered, self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
         self.votes_digital=fn.CalcVotes(self.enquete_data_digital_filtered, self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
+        self.votetoratio()    
+    def votetoratio(self):
         self.votes_ratio_paper=(self.votes_paper.T/self.votes_paper.T.sum()).T
-        self.votes_ratio_digital=(self.votes_digital.T/self.votes_digital.T.sum()).T
+        self.votes_ratio_digital=(self.votes_digital.T/self.votes_digital.T.sum()).T   
+
     def save_pickle(self):
         if self.votes_paper is not None and self.votes_digital is not None:
             self.votes_paper.to_pickle(self.save_dir + self.head_common + 'votes_paper.pickle')
@@ -73,7 +76,10 @@ class HandleRawCSV:
             self.elo_rating_digital_sheet=pd.read_pickle(self.save_dir + self.head_common + 'elo_digital_sheet.pickle')
         except:
             print('{} does not exist'.format(self.save_dir + self.head_common + 'elo_digital_sheet.pickle'))
-        
+        try:
+            self.votetoratio()
+        except:
+            pass
     def MakeReference_v1(self):
         elo_rating_digital_frame=pd.DataFrame()
         for issue in self.issue_num_list:
