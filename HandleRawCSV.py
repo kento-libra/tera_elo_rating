@@ -48,8 +48,27 @@ class HandleRawCSV:
         if self.votes_paper is not None and self.votes_digital is not None:
             self.votes_paper.to_pickle(self.save_dir + self.head_common + 'votes_paper.pickle')
             self.votes_digital.to_pickle(self.save_dir + self.head_common + 'votes_digital.pickle')
-        pass
-    
+        if self.elo_rating_paper_sheet is not None and self.elo_rating_digital_sheet is not None:
+            self.elo_rating_paper_sheet.to_pickle(self.save_dir + self.head_common + 'elo_paper_sheet.pickle')
+            self.elo_rating_digital_sheet.to_pickle(self.save_dir + self.head_common + 'elo_digital_sheet.pickle')
+    def load_pickle(self):
+        try:
+            self.votes_paper=pd.read_pickle(self.save_dir + self.head_common + 'votes_paper.pickle')
+        except:
+            print('{} does not exist'.format(self.save_dir + self.head_common + 'votes_paper.pickle'))
+        try:
+            self.votes_digital=pd.read_pickle(self.save_dir + self.head_common + 'votes_digital.pickle')
+        except:
+            print('{} does not exist'.format(self.save_dir + self.head_common + 'votes_digital.pickle'))
+        try:
+            self.elo_rating_paper_sheet=pd.read_pickle(self.save_dir + self.head_common + 'elo_paper_sheet.pickle')
+        except:
+            print('{} does not exist'.format(self.save_dir + self.head_common + 'elo_paper_sheet.pickle'))
+        try:
+            self.elo_rating_digital_sheet=pd.read_pickle(self.save_dir + self.head_common + 'elo_digital_sheet.pickle')
+        except:
+            print('{} does not exist'.format(self.save_dir + self.head_common + 'elo_digital_sheet.pickle'))
+        
     def MakeReference_v1(self):
         elo_rating_digital_frame=pd.DataFrame()
         for issue in self.issue_num_list:
