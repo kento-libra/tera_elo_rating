@@ -41,11 +41,11 @@ class HandleRawCSV:
     def EloSheet(self):
         self.elo_rating_paper_sheet=fn.EloToSheet(self.elo_rating_paper,self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
         self.elo_rating_digital_sheet=fn.EloToSheet(self.elo_rating_digital,self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
-    
     def votes(self):
         self.votes_paper=fn.CalcVotes(self.enquete_data_paper_filtered, self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
         self.votes_digital=fn.CalcVotes(self.enquete_data_digital_filtered, self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
-    
+        self.votes_ratio_paper=(self.votes_paper.T/self.votes_paper.T.sum()).T
+        self.votes_ratio_digital=(self.votes_digital.T/self.votes_digital.T.sum()).T
     def save_pickle(self):
         if self.votes_paper is not None and self.votes_digital is not None:
             self.votes_paper.to_pickle(self.save_dir + self.head_common + 'votes_paper.pickle')
