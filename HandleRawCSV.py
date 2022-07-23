@@ -4,7 +4,6 @@ import japanize_matplotlib
 import pickle
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-import elo_calc
 import funcs
 
 class HandleRawCSV:
@@ -32,6 +31,18 @@ class HandleRawCSV:
         self.elo_rating_digital = funcs.CalcElo(results_digital, self.issue_num_list)
         self.elo_rating_paper = funcs.CalcElo(results_paper, self.issue_num_list)
         print('Fitting Done!')
+
     def save_pickle(self,pickle_dir):
         self.elo_rating_paper.to_pickle(pickle_dir + self.head_common + 'elo_rating_paper_weight.pickle')
         self.elo_rating_digital.to_pickle(pickle_dir + self.head_common +'elo_rating_digital_weight.pickle')
+    
+    def MakeReference_v1(self,pickle_dir):
+        elo_rating_digital_frame=pd.DataFrame()
+        for issue in self.issue_num_list:
+            tmp_df=self.elo_rating_digital.query('issue==@issue')
+            tmp_df.index=tmp_df['name']
+            elo_rating_digital_frame = pd.concat([elo_rating_digital_frame, tmp_df['elo']],axis=1)
+        elo_rating_digital_frame.columns=self.issue_num_list
+        elo_rating_digital_frame_filtered = elo_rating_digital_frame.drop([1,'マッシュル-MASHLE-']).T.dropna(axis=1,thresh=30)
+        self.elo_calc_list=~elo_rating_digital_frame_filtered.interpolate(limit=2).isna()
+        self.elo_calc_list.to_pickle( pickle_dir + self.head_common + 'elo_calc_list_v1')

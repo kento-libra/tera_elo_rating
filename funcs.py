@@ -133,3 +133,13 @@ def read_raw_csv(save_dir,
         enquete_data_filtered.to_pickle(save_dir + head_common + filtered_paper_name)
         np.save(save_dir + head_common + issue_num_name ,issue_num_list)
     return enquete_data_digital_filtered, enquete_data_filtered, issue_num_list, head_common
+
+def GenerateGroupList(agelist):
+    grouplist=[]
+    agelist=[-1]+agelist+[100]
+    for i in range(len(agelist)-1):
+        grouplist.append('{} < age <= {} and gender == 1'.format(agelist[i],agelist[i+1]))
+    for i in range(len(agelist)-1):
+        grouplist.append('{} < age <= {} and gender == 2'.format(agelist[i],agelist[i+1]))
+    return grouplist
+

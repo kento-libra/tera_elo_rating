@@ -1,9 +1,5 @@
-import math
-import pandas
-import elo_calc
-import datetime
 import HandleRawCSV
-from constants import kEnqueteCsvPathPaperEnqueteData, kEnqueteCsvPathDigitalEnqueteData, kEnqueteCsvPathTitleData, kEnqueteEloPickleBase
+from constants import kEnqueteEloPickleBase
 
 def main():
     mycsv=HandleRawCSV.HandleRawCSV(kEnqueteEloPickleBase)
