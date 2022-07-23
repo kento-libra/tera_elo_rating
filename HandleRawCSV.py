@@ -23,6 +23,7 @@ class HandleRawCSV:
     def elo(self):
         if os.path.isfile(self.save_dir + self.head_common + 'elo_rating_paper_list.pickle')\
             and os.path.isfile(self.save_dir + self.head_common +'elo_rating_digital_list.pickle'):
+            #loading elo list
             self.elo_rating_paper=pd.read_pickle(self.save_dir + self.head_common + 'elo_rating_paper_list.pickle')
             self.elo_rating_digital=pd.read_pickle(self.save_dir + self.head_common +'elo_rating_digital_list.pickle')
         else:
@@ -32,6 +33,8 @@ class HandleRawCSV:
             self.elo_rating_digital = fn.CalcElo(results_digital, self.issue_num_list)
             self.elo_rating_paper = fn.CalcElo(results_paper, self.issue_num_list)
             print('Fitting Done!')
+
+            #saveing elo list
             self.elo_rating_paper.to_pickle(self.save_dir + self.head_common + 'elo_rating_paper_list.pickle')
             self.elo_rating_digital.to_pickle(self.save_dir + self.head_common +'elo_rating_digital_list.pickle')
     
@@ -79,8 +82,8 @@ class HandleRawCSV:
             elo_rating_digital_frame = pd.concat([elo_rating_digital_frame, tmp_df['elo']],axis=1)
         elo_rating_digital_frame.columns=self.issue_num_list
         elo_rating_digital_frame_filtered = elo_rating_digital_frame.drop([1,'マッシュル-MASHLE-']).T.dropna(axis=1,thresh=30)
-        self.elo_calc_list=~elo_rating_digital_frame_filtered.interpolate(limit=2).isna()
-        self.elo_calc_list.to_pickle(self.save_dir + self.head_common + 'elo_calc_list_v1.pickle')
+        elo_calc_list=~elo_rating_digital_frame_filtered.interpolate(limit=2).isna()
+        elo_calc_list.to_pickle(self.save_dir + self.head_common + 'elo_calc_list_v1.pickle')
 
     def SetReference(self,ref_name=None):
         if ref_name is not None:
