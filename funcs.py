@@ -64,10 +64,25 @@ def CalcElo(results, issue_num_list):
         res.reset_index(inplace=True)
         res = res[['issue', 'name', 'rank', 'elo']]
         elo_rating = elo_rating.append(res, ignore_index=True)
+    
     return elo_rating
+def EloToSheet(elo_rating, issue_num_list):
+    elo_rating_frame=pd.DataFrame()
+    for issue in issue_num_list:
+        tmp_df=elo_rating.query('issue==@issue')
+        tmp_df.index=tmp_df['name']
+        elo_rating_frame = pd.concat([elo_rating_frame, tmp_df['elo']],axis=1)
+    elo_rating_frame.columns=issue_num_list
+    elo_rating_sheet=elo_rating_frame.T
+    return elo_rating_sheet
 
-def CalcVotes():
-    return
+def CalcVotes(enquete_data, issue_num_list):
+  result_df=pd.DataFrame(index=enquete_data.unique())
+  for i in tqdm(issue_num_list):
+    flatten_list=enquete_data.query('issue==@i').loc[:,'title_1':'title_3'].to_numpy().flatten()
+    titles, num_votes=np.unique(flatten_list,return_counts=True)
+    result_df=pd.concat([result_df,pd.DataFrame(num_votes,index=titles,columns=[i])],axis=1)
+  return result_df.T
 
 filtered_digital_name='digital_filtered_raw.pickle'
 filtered_paper_name='paper_filtered_raw.pickle'
