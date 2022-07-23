@@ -21,10 +21,10 @@ class HandleRawCSV:
         print('Initing Done!')
     
     def elo(self):
-        if os.path.isfile(self.save_dir + self.head_common + 'elo_rating_paper_weight.pickle')\
-            and os.path.isfile(self.save_dir + self.head_common +'elo_rating_digital_weight.pickle'):
-            self.elo_rating_paper=pd.read_pickle(self.save_dir + self.head_common + 'elo_rating_paper_weight.pickle')
-            self.elo_rating_digital=pd.read_pickle(self.save_dir + self.head_common +'elo_rating_digital_weight.pickle')
+        if os.path.isfile(self.save_dir + self.head_common + 'elo_rating_paper_list.pickle')\
+            and os.path.isfile(self.save_dir + self.head_common +'elo_rating_digital_list.pickle'):
+            self.elo_rating_paper=pd.read_pickle(self.save_dir + self.head_common + 'elo_rating_paper_list.pickle')
+            self.elo_rating_digital=pd.read_pickle(self.save_dir + self.head_common +'elo_rating_digital_list.pickle')
         else:
             results_digital=fn.TranslateResult(self.enquete_data_digital_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
             results_paper=fn.TranslateResult(self.enquete_data_paper_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
@@ -32,8 +32,8 @@ class HandleRawCSV:
             self.elo_rating_digital = fn.CalcElo(results_digital, self.issue_num_list)
             self.elo_rating_paper = fn.CalcElo(results_paper, self.issue_num_list)
             print('Fitting Done!')
-            self.elo_rating_paper.to_pickle(self.save_dir + self.head_common + 'elo_rating_paper_weight.pickle')
-            self.elo_rating_digital.to_pickle(self.save_dir + self.head_common +'elo_rating_digital_weight.pickle')
+            self.elo_rating_paper.to_pickle(self.save_dir + self.head_common + 'elo_rating_paper_list.pickle')
+            self.elo_rating_digital.to_pickle(self.save_dir + self.head_common +'elo_rating_digital_list.pickle')
     
     def EloSheet(self):
         self.elo_rating_paper_sheet=fn.EloToSheet(self.elo_rating_paper,self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
