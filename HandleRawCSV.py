@@ -37,7 +37,7 @@ class HandleRawCSV:
             self.elo_rating_digital.to_pickle(self.save_dir + self.head_common +'elo_rating_digital_weight.pickle')
 
     def save_pickle(self):
-        
+        pass
     
     def MakeReference_v1(self):
         elo_rating_digital_frame=pd.DataFrame()
