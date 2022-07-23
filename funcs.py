@@ -77,12 +77,12 @@ def EloToSheet(elo_rating, issue_num_list):
     return elo_rating_sheet
 
 def CalcVotes(enquete_data, issue_num_list):
-  result_df=pd.DataFrame(index=enquete_data['name'].unique())
+  result_list=[]
   for i in tqdm(issue_num_list):
     flatten_list=enquete_data.query('issue==@i').loc[:,'title_1':'title_3'].to_numpy().flatten()
     titles, num_votes=np.unique(flatten_list,return_counts=True)
-    result_df=pd.concat([result_df,pd.DataFrame(num_votes,index=titles,columns=[i])],axis=1)
-  return result_df.T
+    result_list.append(pd.DataFrame(num_votes,index=titles,columns=[i]))
+  return pd.concat(result_list,axis=1).T
 
 filtered_digital_name='digital_filtered_raw.pickle'
 filtered_paper_name='paper_filtered_raw.pickle'
