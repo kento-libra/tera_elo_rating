@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-import funcs
+import funcs as fn
 
 class HandleRawCSV:
     def __init__(self,
@@ -17,7 +17,7 @@ class HandleRawCSV:
         self.save_dir=save_dir
         #self.head_common='isWeight:{}_numLoser:{}_div:{}_'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division)
         self.enquete_data_digital_filtered, self.enquete_data_filtered, self.issue_num_list, self.head_common=\
-            funcs.read_raw_csv(save_dir, isWeightedByReadSegment=self.isWeightedByReadSegment, NumRandomLosers=self.NumRandomLosers,\
+            fn.read_raw_csv(save_dir, isWeightedByReadSegment=self.isWeightedByReadSegment, NumRandomLosers=self.NumRandomLosers,\
                 division=self.division, kEnqueteTitleMinimumIssue = kEnqueteTitleMinimumIssue)
         print('Initing Done!')
     
@@ -27,11 +27,11 @@ class HandleRawCSV:
             self.elo_rating_paper=pd.read_pickle(self.save_dir + self.head_common + 'elo_rating_paper_weight.pickle')
             self.elo_rating_digital=pd.read_pickle(self.save_dir + self.head_common +'elo_rating_digital_weight.pickle')
         else:
-            results_digital=funcs.TranslateResult(self.enquete_data_digital_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
-            results_paper=funcs.TranslateResult(self.enquete_data_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
+            results_digital=fn.TranslateResult(self.enquete_data_digital_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
+            results_paper=fn.TranslateResult(self.enquete_data_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
             print('Translating Done!')
-            self.elo_rating_digital = funcs.CalcElo(results_digital, self.issue_num_list)
-            self.elo_rating_paper = funcs.CalcElo(results_paper, self.issue_num_list)
+            self.elo_rating_digital = fn.CalcElo(results_digital, self.issue_num_list)
+            self.elo_rating_paper = fn.CalcElo(results_paper, self.issue_num_list)
             print('Fitting Done!')
             self.elo_rating_paper.to_pickle(self.save_dir + self.head_common + 'elo_rating_paper_weight.pickle')
             self.elo_rating_digital.to_pickle(self.save_dir + self.head_common +'elo_rating_digital_weight.pickle')
