@@ -15,7 +15,6 @@ class HandleRawCSV:
         self.NumRandomLosers=NumRandomLosers
         self.division=division
         self.save_dir=save_dir
-        #self.head_common='isWeight:{}_numLoser:{}_div:{}_'.format(self.isWeightedByReadSegment, self.NumRandomLosers,self.division)
         self.enquete_data_digital_filtered, self.enquete_data_paper_filtered, self.issue_num_list, self.head_common=\
             fn.read_raw_csv(save_dir, isWeightedByReadSegment=self.isWeightedByReadSegment, NumRandomLosers=self.NumRandomLosers,\
                 division=self.division, kEnqueteTitleMinimumIssue = kEnqueteTitleMinimumIssue)
@@ -48,9 +47,12 @@ class HandleRawCSV:
         if self.votes_paper is not None and self.votes_digital is not None:
             self.votes_paper.to_pickle(self.save_dir + self.head_common + 'votes_paper.pickle')
             self.votes_digital.to_pickle(self.save_dir + self.head_common + 'votes_digital.pickle')
+            print('votes saved!')
         if self.elo_rating_paper_sheet is not None and self.elo_rating_digital_sheet is not None:
             self.elo_rating_paper_sheet.to_pickle(self.save_dir + self.head_common + 'elo_paper_sheet.pickle')
             self.elo_rating_digital_sheet.to_pickle(self.save_dir + self.head_common + 'elo_digital_sheet.pickle')
+            print('elo saved!')
+
     def load_pickle(self):
         try:
             self.votes_paper=pd.read_pickle(self.save_dir + self.head_common + 'votes_paper.pickle')
@@ -89,4 +91,4 @@ class HandleRawCSV:
         self.elo()
         self.MakeReference_v1()
         self.votes()
-        self.save_pickle
+        self.save_pickle()
