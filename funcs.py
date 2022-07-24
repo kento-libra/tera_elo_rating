@@ -23,7 +23,7 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
     unique_list=pd.DataFrame(unique_list, columns=['list','issue'])
     for _, row in tqdm(enquete_data.iterrows(), total=enquete_data.shape[0]):
         i, t1, t2, t3, w = row['issue'], row['title_1'], row['title_2'], row['title_3'], int(row['read_segment']) if isWeightedByReadSegment else 1
-        results.extend(int(200000/len(enquete_data)+1)*[
+        results.extend(int(20000/len(enquete_data)+1)*[
             [i, t1, t2, w],
             [i, t2, t3, w],
             [i, t1, t3, w],
@@ -64,8 +64,8 @@ def CalcElo(results, issue_num_list):
         res.reset_index(inplace=True)
         res = res[['issue', 'name', 'rank', 'elo']]
         elo_rating = elo_rating.append(res, ignore_index=True)
-    
     return elo_rating
+
 def EloToSheet(elo_rating, issue_num_list):
     elo_rating_frame=pd.DataFrame()
     for issue in issue_num_list:
