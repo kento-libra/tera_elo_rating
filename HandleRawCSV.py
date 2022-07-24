@@ -11,6 +11,7 @@ class HandleRawCSV:
                 NumRandomLosers=0,
                 division='All'
                 ):
+        
         self.isWeightedByReadSegment=isWeightedByReadSegment
         self.NumRandomLosers=NumRandomLosers
         self.division=division
@@ -87,7 +88,6 @@ class HandleRawCSV:
     
     def automate(self):
         self.elo()
-        self.MakeReference_v1()
         self.SetReference()
         self.votes()
         self.EloSheet()

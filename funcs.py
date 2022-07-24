@@ -78,7 +78,7 @@ def EloToSheet(elo_rating, issue_num_list):
 
 def CalcVotes(enquete_data, issue_num_list):
   result_list=[]
-  for i in tqdm(issue_num_list):
+  for i in issue_num_list:
     flatten_list=enquete_data.query('issue==@i').loc[:,'title_1':'title_3'].to_numpy().flatten()
     titles, num_votes=np.unique(flatten_list,return_counts=True)
     result_list.append(pd.DataFrame(num_votes,index=titles,columns=[i]))
@@ -93,6 +93,7 @@ def read_raw_csv(save_dir,
                 division='All',
                 kEnqueteTitleMinimumIssue = 10):
     head_common ='isWeight:{}_numLoser:{}_div:{}_'.format(isWeightedByReadSegment, NumRandomLosers, division)
+    print('Calculating: {}'.format(head_common))
     if os.path.isfile(save_dir + head_common + filtered_digital_name) and os.path.isfile(save_dir + head_common + filtered_paper_name) and os.path.isfile(save_dir + head_common + issue_num_name):
         enquete_data_digital_filtered = pd.read_pickle(save_dir + head_common + filtered_digital_name)
         enquete_data_filtered = pd.read_pickle(save_dir + head_common + filtered_paper_name)
