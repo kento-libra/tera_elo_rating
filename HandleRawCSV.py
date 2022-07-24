@@ -18,6 +18,9 @@ class HandleRawCSV:
         self.enquete_data_digital_filtered, self.enquete_data_paper_filtered, self.issue_num_list, self.head_common=\
             fn.read_raw_csv(save_dir, isWeightedByReadSegment=self.isWeightedByReadSegment, NumRandomLosers=self.NumRandomLosers,\
                 division=self.division, kEnqueteTitleMinimumIssue = kEnqueteTitleMinimumIssue)
+        self.enquete_data_digital_filtered=self.enquete_data_digital_filtered.dropna(subset=['gender','age'])
+        self.enquete_data_digital_filtered=self.enquete_data_digital_filtered.replace({'gender':{'男性':1,'女性':2}})
+        self.enquete_data_digital_filtered['age']=self.enquete_data_digital_filtered['age'].astype(int)
         print('Initing Done!')
     
     def elo(self):
@@ -39,47 +42,34 @@ class HandleRawCSV:
             self.elo_rating_digital.to_pickle(self.save_dir + self.head_common +'elo_rating_digital_list.pickle')
     
     def EloSheet(self):
-        self.elo_rating_paper_sheet=fn.EloToSheet(self.elo_rating_paper,self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
-        self.elo_rating_digital_sheet=fn.EloToSheet(self.elo_rating_digital,self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
+        if os.path.isfile(self.save_dir + self.head_common + 'elo_paper_sheet.pickle')\
+            and os.path.isfile(self.save_dir + self.head_common +'elo_digital_sheet.pickle'):
+            self.elo_rating_paper_sheet=pd.read_pickle(self.save_dir + self.head_common + 'elo_paper_sheet.pickle')
+            self.elo_rating_digital_sheet=pd.read_pickle(self.save_dir + self.head_common + 'elo_digital_sheet.pickle')
+        else:
+            self.elo_rating_paper_sheet=fn.EloToSheet(self.elo_rating_paper,self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
+            self.elo_rating_digital_sheet=fn.EloToSheet(self.elo_rating_digital,self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
+            
+            self.elo_rating_paper_sheet.to_pickle(self.save_dir + self.head_common + 'elo_paper_sheet.pickle')
+            self.elo_rating_digital_sheet.to_pickle(self.save_dir + self.head_common + 'elo_digital_sheet.pickle')
+
     def votes(self):
-        self.votes_paper=fn.CalcVotes(self.enquete_data_paper_filtered, self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
-        self.votes_digital=fn.CalcVotes(self.enquete_data_digital_filtered, self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
+        votes_paper_dir=self.save_dir + self.head_common + 'votes_paper.pickle'
+        votes_digital_dir=self.save_dir + self.head_common + 'votes_paper.pickle'
+        if os.path.isfile(votes_paper_dir) and os.path.isfile(votes_digital_dir):
+            self.votes_paper=pd.read_pickle(votes_paper_dir)
+            self.votes_digital=pd.read_pickle(votes_digital_dir)
+        else:
+            self.votes_paper=fn.CalcVotes(self.enquete_data_paper_filtered, self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
+            self.votes_digital=fn.CalcVotes(self.enquete_data_digital_filtered, self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
+            self.votes_paper.to_pickle(votes_paper_dir)
+            self.votes_digital.to_pickle(votes_digital_dir)        
         self.votetoratio()    
+    
     def votetoratio(self):
         self.votes_ratio_paper=(self.votes_paper.T/self.votes_paper.T.sum()).T
         self.votes_ratio_digital=(self.votes_digital.T/self.votes_digital.T.sum()).T   
 
-    def save_pickle(self):
-        if self.votes_paper is not None and self.votes_digital is not None:
-            self.votes_paper.to_pickle(self.save_dir + self.head_common + 'votes_paper.pickle')
-            self.votes_digital.to_pickle(self.save_dir + self.head_common + 'votes_digital.pickle')
-            print('votes saved!')
-        if self.elo_rating_paper_sheet is not None and self.elo_rating_digital_sheet is not None:
-            self.elo_rating_paper_sheet.to_pickle(self.save_dir + self.head_common + 'elo_paper_sheet.pickle')
-            self.elo_rating_digital_sheet.to_pickle(self.save_dir + self.head_common + 'elo_digital_sheet.pickle')
-            print('elo saved!')
-
-    def load_pickle(self):
-        try:
-            self.votes_paper=pd.read_pickle(self.save_dir + self.head_common + 'votes_paper.pickle')
-        except:
-            print('{} does not exist'.format(self.save_dir + self.head_common + 'votes_paper.pickle'))
-        try:
-            self.votes_digital=pd.read_pickle(self.save_dir + self.head_common + 'votes_digital.pickle')
-        except:
-            print('{} does not exist'.format(self.save_dir + self.head_common + 'votes_digital.pickle'))
-        try:
-            self.elo_rating_paper_sheet=pd.read_pickle(self.save_dir + self.head_common + 'elo_paper_sheet.pickle')
-        except:
-            print('{} does not exist'.format(self.save_dir + self.head_common + 'elo_paper_sheet.pickle'))
-        try:
-            self.elo_rating_digital_sheet=pd.read_pickle(self.save_dir + self.head_common + 'elo_digital_sheet.pickle')
-        except:
-            print('{} does not exist'.format(self.save_dir + self.head_common + 'elo_digital_sheet.pickle'))
-        try:
-            self.votetoratio()
-        except:
-            pass
     def MakeReference_v1(self):
         elo_rating_digital_frame=pd.DataFrame()
         for issue in self.issue_num_list:
@@ -91,13 +81,15 @@ class HandleRawCSV:
         elo_calc_list=~elo_rating_digital_frame_filtered.interpolate(limit=2).isna()
         elo_calc_list.to_pickle(self.save_dir + self.head_common + 'elo_calc_list_v1.pickle')
 
-    def SetReference(self,ref_name=None):
+    def SetReference(self, ref_name=None):
         if ref_name is not None:
             self.elo_calc_list=pd.read_pickle(self.save_dir + ref_name)
         else:
             self.elo_calc_list=pd.read_pickle(self.save_dir + self.head_common + 'elo_calc_list_v1.pickle')
+    
     def automate(self):
         self.elo()
         self.MakeReference_v1()
+        self.SetReference()
         self.votes()
-        self.save_pickle()
+        self.EloSheet()
