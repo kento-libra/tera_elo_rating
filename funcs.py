@@ -113,9 +113,7 @@ def read_raw_csv(save_dir,
                                 .drop(columns=['title_code', 'title_3'])\
                                 .rename(columns={'title': 'title_3'})
         # 読み切りなどを削除 'year == @kEnqueteTargetYear'
-        if division is not 'All':
-            enquete_data_digital=enquete_data_digital.query(division)
-            enquete_data_merged=enquete_data_merged.query(division)
+        
         enquete_data_digital_filtered = enquete_data_digital.query('not age.str.contains("\|")')\
                                                     .groupby('title_1')\
                                                     .filter(lambda x: x['issue'].groupby(x['title_1']).nunique().max() >= kEnqueteTitleMinimumIssue)
@@ -139,6 +137,12 @@ def read_raw_csv(save_dir,
         enquete_data_digital_filtered['issue']=(enquete_data_digital_filtered['year'].astype(str)+enquete_data_digital_filtered['issue'].astype(str).str.zfill(2)).astype(int)
         enquete_data_filtered['issue']=(enquete_data_filtered['year'].astype(str)+enquete_data_filtered['issue'].astype(str).str.zfill(2)).astype(int)
         enquete_data_filtered['read_segment']=1
+        enquete_data_digital_filtered=enquete_data_digital_filtered.dropna(subset=['gender','age'])
+        enquete_data_digital_filtered=enquete_data_digital_filtered.replace({'gender':{'男性':1,'女性':2}})
+        enquete_data_digital_filtered['age']=enquete_data_digital_filtered['age'].astype(int)
+        if division is not 'All':
+            enquete_data_digital=enquete_data_digital.query(division)
+            enquete_data_merged=enquete_data_merged.query(division)
         issue_num_digital = enquete_data_digital_filtered['issue']
         issue_num_paper = enquete_data_filtered['issue']
         issue_num_list = np.intersect1d(issue_num_digital.unique(), issue_num_paper.unique())
