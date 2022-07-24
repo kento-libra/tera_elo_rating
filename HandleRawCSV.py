@@ -84,7 +84,7 @@ class HandleRawCSV:
         if ref_name is not None:
             self.elo_calc_list=pd.read_pickle(self.save_dir + ref_name)
         else:
-            self.elo_calc_list=pd.read_pickle(self.save_dir + self.head_common + 'elo_calc_list_v1.pickle')
+            self.elo_calc_list=pd.read_pickle(self.save_dir + 'isWeight:False_numLoser:0_div:All_elo_calc_list_v1.pickle')
     
     def automate(self):
         self.elo()
