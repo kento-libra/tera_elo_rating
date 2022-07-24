@@ -15,12 +15,13 @@ class HandleRawCSV:
         self.NumRandomLosers=NumRandomLosers
         self.division=division
         self.save_dir=save_dir
-        self.enquete_data_digital_filtered, self.enquete_data_paper_filtered, self.issue_num_list, self.head_common=\
-            fn.read_raw_csv(save_dir, isWeightedByReadSegment=self.isWeightedByReadSegment, NumRandomLosers=self.NumRandomLosers,\
-                division=self.division, kEnqueteTitleMinimumIssue = kEnqueteTitleMinimumIssue)
         self.enquete_data_digital_filtered=self.enquete_data_digital_filtered.dropna(subset=['gender','age'])
         self.enquete_data_digital_filtered=self.enquete_data_digital_filtered.replace({'gender':{'男性':1,'女性':2}})
         self.enquete_data_digital_filtered['age']=self.enquete_data_digital_filtered['age'].astype(int)
+        self.enquete_data_digital_filtered, self.enquete_data_paper_filtered, self.issue_num_list, self.head_common=\
+            fn.read_raw_csv(save_dir, isWeightedByReadSegment=self.isWeightedByReadSegment, NumRandomLosers=self.NumRandomLosers,\
+                division=self.division, kEnqueteTitleMinimumIssue = kEnqueteTitleMinimumIssue)
+        
         print('Initing Done!')
     
     def elo(self):
