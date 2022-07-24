@@ -141,8 +141,8 @@ def read_raw_csv(save_dir,
         enquete_data_digital_filtered=enquete_data_digital_filtered.replace({'gender':{'男性':1,'女性':2}})
         enquete_data_digital_filtered['age']=enquete_data_digital_filtered['age'].astype(int)
         if division is not 'All':
-            enquete_data_digital=enquete_data_digital.query(division)
-            enquete_data_merged=enquete_data_merged.query(division)
+            enquete_data_digital_filtered=enquete_data_digital_filtered.query(division)
+            enquete_data_filtered=enquete_data_filtered.query(division)
         issue_num_digital = enquete_data_digital_filtered['issue']
         issue_num_paper = enquete_data_filtered['issue']
         issue_num_list = np.intersect1d(issue_num_digital.unique(), issue_num_paper.unique())
