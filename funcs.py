@@ -7,7 +7,7 @@ import pickle
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import elo_calc
-from constants import kEnqueteCsvPathPaperEnqueteData, kEnqueteCsvPathDigitalEnqueteData, kEnqueteCsvPathTitleData, kEnqueteEloPickleBase
+from constants import kEnqueteCsvPathPaperEnqueteData, kEnqueteCsvPathDigitalEnqueteData, kEnqueteCsvPathTitleData, kEnqueteEloPickleBase,kEnqueteEloImgBase
 
 
 def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
@@ -163,3 +163,29 @@ def GenerateGroupList(agelist):
         grouplist.append('{} < age <= {} and gender == 2'.format(agelist[i],agelist[i+1]))
     return grouplist
 
+def print_graph(HR_paper, HR_digital, target='elo', whetherprint=True, appendix='',imgs_dir=kEnqueteEloImgBase):
+    elo_vector=pd.DataFrame()
+    if target=='elo':
+        print_list=[HR_paper.elo_rating_paper_sheet,HR_digital.elo_rating_digital_sheet]
+    if target=='votes_ratio':
+        print_list=[HR_paper.votes_ratio_paper,HR_digital.votes_ratio_digital]
+    for i in range(len(print_list)):
+        tmp_sr=pd.Series(print_list[i].to_numpy().flatten())
+        elo_vector=pd.concat([elo_vector,tmp_sr],axis=1)
+    elo_corr=elo_vector.iloc[:,[0,1]].corr().iloc[0,1]
+
+    plt.figure(figsize=(6, 6))
+    if target=='elo':
+        plt.xlim([1200,2000])
+        plt.ylim([1200,2000])
+        plt.text(1800,1950,'r = {:5f}'.format(elo_corr))
+    if target=='votes_ratio':
+        plt.xlim([0,0.3])
+        plt.ylim([0,0.3])
+        plt.text(0.23,0.28,'r = {:5f}'.format(elo_corr))
+    for i in range(len(print_list[0].columns)):
+        plt.scatter(print_list[0].iloc[:,i], print_list[1].iloc[:,i])
+    if whetherprint:
+        save_file_name=imgs_dir+'isWeight:{}_numLoser:{}_paperdiv:{}_digital_div:{}_{}.png'.format(HR_paper.isWeightedByReadSegment, HR_paper.NumRandomLosers,HR_paper.division,HR_digital.division,appendix)
+        plt.savefig(save_file_name)
+        print(save_file_name)

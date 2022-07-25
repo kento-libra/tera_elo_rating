@@ -16,3 +16,4 @@ kEnquetePicklePathPaperEnqueteData   = path.join(kEnqueteDirectoryPickleCache, '
 kEnquetePicklePathTitleData          = path.join(kEnqueteDirectoryPickleCache, 'title_data.pickle')
 
 kEnqueteEloPickleBase ='/home/data/enquete/work/tera/pickle/'
+kEnqueteEloImgBase='/home/data/enquete/work/tera/imgs/'
