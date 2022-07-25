@@ -54,7 +54,7 @@ class HandleRawCSV:
 
     def votes(self):
         votes_paper_dir=self.save_dir + self.head_common + 'votes_paper.pickle'
-        votes_digital_dir=self.save_dir + self.head_common + 'votes_paper.pickle'
+        votes_digital_dir=self.save_dir + self.head_common + 'votes_digital.pickle'
         if os.path.isfile(votes_paper_dir) and os.path.isfile(votes_digital_dir):
             self.votes_paper=pd.read_pickle(votes_paper_dir)
             self.votes_digital=pd.read_pickle(votes_digital_dir)
