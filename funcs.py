@@ -113,6 +113,8 @@ def read_raw_csv(dirs,
             enquete_data_merged = pd.merge(enquete_data_merged, title_data_only, left_on='title_3', right_on='title_code', suffixes=['', '_3'])\
                                     .drop(columns=['title_code', 'title_3'])\
                                     .rename(columns={'title': 'title_3'})
+        else:
+            enquete_data_merged=enquete_data
         # 読み切りなどを削除 'year == @kEnqueteTargetYear'
         
         enquete_data_digital_filtered = enquete_data_digital.query('not age.str.contains("\|")')\
