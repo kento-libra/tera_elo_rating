@@ -7,7 +7,7 @@ import pickle
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import elo_calc
-from constants import kEnqueteCsvPathPaperEnqueteData, kEnqueteCsvPathDigitalEnqueteData, kEnqueteCsvPathTitleData, kEnqueteEloPickleBase,kEnqueteEloImgBase
+#from constants import kEnqueteCsvPathPaperEnqueteData, kEnqueteCsvPathDigitalEnqueteData, kEnqueteCsvPathTitleData, kEnqueteEloPickleBase,kEnqueteEloImgBase
 
 
 def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
@@ -87,21 +87,21 @@ def CalcVotes(enquete_data, issue_num_list):
 filtered_digital_name='digital_filtered_raw.pickle'
 filtered_paper_name='paper_filtered_raw.pickle'
 issue_num_name='issue_num_list.npy'
-def read_raw_csv(save_dir,
+def read_raw_csv(dirs,
                 isWeightedByReadSegment=False,
                 NumRandomLosers=0,
                 division='All',
                 kEnqueteTitleMinimumIssue = 10):
     head_common ='isWeight:{}_numLoser:{}_div:{}_'.format(isWeightedByReadSegment, NumRandomLosers, division)
     print('Calculating: {}'.format(head_common))
-    if os.path.isfile(save_dir + head_common + filtered_digital_name) and os.path.isfile(save_dir + head_common + filtered_paper_name) and os.path.isfile(save_dir + head_common + issue_num_name):
-        enquete_data_digital_filtered = pd.read_pickle(save_dir + head_common + filtered_digital_name)
-        enquete_data_filtered = pd.read_pickle(save_dir + head_common + filtered_paper_name)
-        issue_num_list = np.load(save_dir + head_common + issue_num_name)
+    if os.path.isfile(dirs['pickle'] + head_common + filtered_digital_name) and os.path.isfile(dirs['pickle'] + head_common + filtered_paper_name) and os.path.isfile(save_dir + head_common + issue_num_name):
+        enquete_data_digital_filtered = pd.read_pickle(dirs['pickle'] + head_common + filtered_digital_name)
+        enquete_data_filtered = pd.read_pickle(dirs['pickle'] + head_common + filtered_paper_name)
+        issue_num_list = np.load(dirs['pickle'] + head_common + issue_num_name)
     else:
-        enquete_data = pd.read_csv(kEnqueteCsvPathPaperEnqueteData)
-        enquete_data_digital = pd.read_csv(kEnqueteCsvPathDigitalEnqueteData)
-        title_data = pd.read_csv(kEnqueteCsvPathTitleData)
+        enquete_data = pd.read_csv(dirs['paper'])
+        enquete_data_digital = pd.read_csv(dirs['digital'])
+        title_data = pd.read_csv(dirs['title'])
         title_data_only = title_data[['title_code', 'title']]
 
         enquete_data_merged = pd.merge(enquete_data, title_data_only, left_on='title_1', right_on='title_code', suffixes=['', '_1'])\
@@ -149,9 +149,9 @@ def read_raw_csv(save_dir,
         issue_num_list = np.intersect1d(issue_num_digital.unique(), issue_num_paper.unique())
         issue_num_list.sort()
 
-        enquete_data_digital_filtered.to_pickle(save_dir + head_common + filtered_digital_name)
-        enquete_data_filtered.to_pickle(save_dir + head_common + filtered_paper_name)
-        np.save(save_dir + head_common + issue_num_name ,issue_num_list)
+        enquete_data_digital_filtered.to_pickle(dirs['pickle'] + head_common + filtered_digital_name)
+        enquete_data_filtered.to_pickle(dirs['pickle'] + head_common + filtered_paper_name)
+        np.save(dirs['pickle'] + head_common + issue_num_name ,issue_num_list)
     return enquete_data_digital_filtered, enquete_data_filtered, issue_num_list, head_common
 
 def GenerateGroupList(agelist):
