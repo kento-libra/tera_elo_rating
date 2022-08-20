@@ -4,7 +4,7 @@ import funcs as fn
 
 class HandleRawCSV:
     def __init__(self,
-                save_dir,
+                dirs,
                 kEnqueteTitleMinimumIssue = 10,
                 kEnqueteTargetYear = 2021,
                 isWeightedByReadSegment=False,
@@ -15,19 +15,19 @@ class HandleRawCSV:
         self.isWeightedByReadSegment=isWeightedByReadSegment
         self.NumRandomLosers=NumRandomLosers
         self.division=division
-        self.save_dir=save_dir
+        self.dirs=dirs
         self.enquete_data_digital_filtered, self.enquete_data_paper_filtered, self.issue_num_list, self.head_common=\
-            fn.read_raw_csv(save_dir, isWeightedByReadSegment=self.isWeightedByReadSegment, NumRandomLosers=self.NumRandomLosers,\
+            fn.read_raw_csv(dirs, isWeightedByReadSegment=self.isWeightedByReadSegment, NumRandomLosers=self.NumRandomLosers,\
                 division=self.division, kEnqueteTitleMinimumIssue = kEnqueteTitleMinimumIssue)
         
         print('Initing Done!')
     
     def elo(self):
-        if os.path.isfile(self.save_dir + self.head_common + 'elo_rating_paper_list.pickle')\
-            and os.path.isfile(self.save_dir + self.head_common +'elo_rating_digital_list.pickle'):
+        if os.path.isfile(self.dirs['pickle'] + self.head_common + 'elo_rating_paper_list.pickle')\
+            and os.path.isfile(self.dirs['pickle'] + self.head_common +'elo_rating_digital_list.pickle'):
             #loading elo list
-            self.elo_rating_paper=pd.read_pickle(self.save_dir + self.head_common + 'elo_rating_paper_list.pickle')
-            self.elo_rating_digital=pd.read_pickle(self.save_dir + self.head_common +'elo_rating_digital_list.pickle')
+            self.elo_rating_paper=pd.read_pickle(self.dirs['pickle'] + self.head_common + 'elo_rating_paper_list.pickle')
+            self.elo_rating_digital=pd.read_pickle(self.dirs['pickle'] + self.head_common +'elo_rating_digital_list.pickle')
         else:
             results_digital=fn.TranslateResult(self.enquete_data_digital_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
             results_paper=fn.TranslateResult(self.enquete_data_paper_filtered,self.isWeightedByReadSegment,self.NumRandomLosers)
@@ -37,24 +37,24 @@ class HandleRawCSV:
             print('Fitting Done!')
 
             #saveing elo list
-            self.elo_rating_paper.to_pickle(self.save_dir + self.head_common + 'elo_rating_paper_list.pickle')
-            self.elo_rating_digital.to_pickle(self.save_dir + self.head_common +'elo_rating_digital_list.pickle')
+            self.elo_rating_paper.to_pickle(self.dirs['pickle'] + self.head_common + 'elo_rating_paper_list.pickle')
+            self.elo_rating_digital.to_pickle(self.dirs['pickle'] + self.head_common +'elo_rating_digital_list.pickle')
     
     def EloSheet(self):
-        if os.path.isfile(self.save_dir + self.head_common + 'elo_paper_sheet.pickle')\
-            and os.path.isfile(self.save_dir + self.head_common +'elo_digital_sheet.pickle'):
-            self.elo_rating_paper_sheet=pd.read_pickle(self.save_dir + self.head_common + 'elo_paper_sheet.pickle')
-            self.elo_rating_digital_sheet=pd.read_pickle(self.save_dir + self.head_common + 'elo_digital_sheet.pickle')
+        if os.path.isfile(self.dirs['pickle'] + self.head_common + 'elo_paper_sheet.pickle')\
+            and os.path.isfile(self.dirs['pickle'] + self.head_common +'elo_digital_sheet.pickle'):
+            self.elo_rating_paper_sheet=pd.read_pickle(self.dirs['pickle'] + self.head_common + 'elo_paper_sheet.pickle')
+            self.elo_rating_digital_sheet=pd.read_pickle(self.dirs['pickle'] + self.head_common + 'elo_digital_sheet.pickle')
         else:
             self.elo_rating_paper_sheet=fn.EloToSheet(self.elo_rating_paper,self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
             self.elo_rating_digital_sheet=fn.EloToSheet(self.elo_rating_digital,self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
             
-            self.elo_rating_paper_sheet.to_pickle(self.save_dir + self.head_common + 'elo_paper_sheet.pickle')
-            self.elo_rating_digital_sheet.to_pickle(self.save_dir + self.head_common + 'elo_digital_sheet.pickle')
+            self.elo_rating_paper_sheet.to_pickle(self.dirs['pickle'] + self.head_common + 'elo_paper_sheet.pickle')
+            self.elo_rating_digital_sheet.to_pickle(self.dirs['pickle'] + self.head_common + 'elo_digital_sheet.pickle')
 
     def votes(self):
-        votes_paper_dir=self.save_dir + self.head_common + 'votes_paper.pickle'
-        votes_digital_dir=self.save_dir + self.head_common + 'votes_digital.pickle'
+        votes_paper_dir=self.dirs['pickle'] + self.head_common + 'votes_paper.pickle'
+        votes_digital_dir=self.dirs['pickle'] + self.head_common + 'votes_digital.pickle'
         if os.path.isfile(votes_paper_dir) and os.path.isfile(votes_digital_dir):
             self.votes_paper=pd.read_pickle(votes_paper_dir)
             self.votes_digital=pd.read_pickle(votes_digital_dir)
@@ -78,13 +78,13 @@ class HandleRawCSV:
         elo_rating_digital_frame.columns=self.issue_num_list
         elo_rating_digital_frame_filtered = elo_rating_digital_frame.drop([1,'マッシュル-MASHLE-']).T.dropna(axis=1,thresh=30)
         elo_calc_list=~elo_rating_digital_frame_filtered.interpolate(limit=2).isna()
-        elo_calc_list.to_pickle(self.save_dir + self.head_common + 'elo_calc_list_v1.pickle')
+        elo_calc_list.to_pickle(self.dirs['pickle'] + self.head_common + 'elo_calc_list_v1.pickle')
 
     def SetReference(self, ref_name=None):
         if ref_name is not None:
-            self.elo_calc_list=pd.read_pickle(self.save_dir + ref_name)
+            self.elo_calc_list=pd.read_pickle(self.dirs['pickle'] + ref_name)
         else:
-            self.elo_calc_list=pd.read_pickle(self.save_dir + 'isWeight:False_numLoser:0_div:All_elo_calc_list_v1.pickle')
+            self.elo_calc_list=pd.read_pickle(self.dirs['pickle'] + 'isWeight:False_numLoser:0_div:All_elo_calc_list_v1.pickle')
     
     def automate(self,doMakeRef=False):
         self.elo()
