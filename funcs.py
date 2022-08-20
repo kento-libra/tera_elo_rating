@@ -22,7 +22,7 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
         unique_list.append([issue_unique_list,i])
     unique_list=pd.DataFrame(unique_list, columns=['list','issue'])
     for _, row in tqdm(enquete_data.iterrows(), total=enquete_data.shape[0]):
-        i, t1, t2, t3, w = row['issue'], row['title_1'], row['title_2'], row['title_3'], int(row['read_segment']) if isWeightedByReadSegment else 1
+        i, t1, t2, t3, w = row['issue'], row['title_1'], row['title_2'], row['title_3'], 1 #int(row['read_segment']) if isWeightedByReadSegment else 1
         results.extend(int(20000/len(enquete_data)+1)*[
             [i, t1, t2, w],
             [i, t2, t3, w],
@@ -118,8 +118,8 @@ def read_raw_csv(dirs,
         enquete_data_digital_filtered = enquete_data_digital.query('not age.str.contains("\|")')\
                                                     .groupby('title_1')\
                                                     .filter(lambda x: x['issue'].groupby(x['title_1']).nunique().max() >= kEnqueteTitleMinimumIssue)
-        enquete_data_digital_filtered.loc[:,'read_segment'] = enquete_data_digital_filtered.loc[:,'read_segment'].replace('全部読んでいる', '25')
-        enquete_data_digital_filtered.loc[:,'read_segment'] = enquete_data_digital_filtered.loc[:,'age'].replace('(\d+).*', r'\1',regex=True)
+        #enquete_data_digital_filtered.loc[:,'read_segment'] = enquete_data_digital_filtered.loc[:,'read_segment'].replace('全部読んでいる', '25')
+        #enquete_data_digital_filtered.loc[:,'read_segment'] = enquete_data_digital_filtered.loc[:,'age'].replace('(\d+).*', r'\1',regex=True)
         enquete_data_digital_filtered.loc[:,'age'] = enquete_data_digital_filtered.loc[:,'age'].replace('(\d+).*', r'\1',regex=True)
         enquete_data_filtered = enquete_data_merged\
                                         .groupby('title_1')\
@@ -137,7 +137,7 @@ def read_raw_csv(dirs,
         players = players.set_index('name')
         enquete_data_digital_filtered['issue']=(enquete_data_digital_filtered['year'].astype(str)+enquete_data_digital_filtered['issue'].astype(str).str.zfill(2)).astype(int)
         enquete_data_filtered['issue']=(enquete_data_filtered['year'].astype(str)+enquete_data_filtered['issue'].astype(str).str.zfill(2)).astype(int)
-        enquete_data_filtered['read_segment']=1
+        #enquete_data_filtered['read_segment']=1
         enquete_data_digital_filtered=enquete_data_digital_filtered.dropna(subset=['gender','age'])
         enquete_data_digital_filtered=enquete_data_digital_filtered.replace({'gender':{'男性':1,'女性':2}})
         enquete_data_digital_filtered['age']=enquete_data_digital_filtered['age'].astype(int)
