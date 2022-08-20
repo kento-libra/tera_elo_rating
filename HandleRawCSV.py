@@ -82,7 +82,7 @@ class HandleRawCSV:
 
     def SetReference(self, ref_name=None):
         if ref_name is not None:
-            self.elo_calc_list=pd.read_pickle(self.dirs['pickle'] + ref_name)
+            self.elo_calc_list=pd.read_pickle(self.dirs['pickle'] + 'isWeight:False_numLoser:0_div:All_elo_calc_list_v1.pickle')
         else:
             self.elo_calc_list=pd.read_pickle('/home/data/enquete/work/tera/pickle/isWeight:False_numLoser:0_div:All_elo_calc_list_v1.pickle')
     
@@ -91,7 +91,7 @@ class HandleRawCSV:
         self.elo()
         if doMakeRef:
             print('Set Matrix as Reference')
-            self.MakeReference_v1(ref_name)
+            self.MakeReference_v1()
         self.SetReference()
         print('Calculating Voting Ratios...')
         self.votes()
