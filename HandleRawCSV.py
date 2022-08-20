@@ -84,7 +84,7 @@ class HandleRawCSV:
         if ref_name is not None:
             self.elo_calc_list=pd.read_pickle(self.dirs['pickle'] + ref_name)
         else:
-            self.elo_calc_list=pd.read_pickle('/home/data/enquete/work/tera/raw/isWeight:False_numLoser:0_div:All_elo_calc_list_v1.pickle')
+            self.elo_calc_list=pd.read_pickle('/home/data/enquete/work/tera/pickle/isWeight:False_numLoser:0_div:All_elo_calc_list_v1.pickle')
     
     def automate(self,doMakeRef=False):
         print('Calculating Elo Rating...')
