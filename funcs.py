@@ -103,16 +103,16 @@ def read_raw_csv(dirs,
         enquete_data_digital = pd.read_csv(dirs['digital'])
         title_data = pd.read_csv(dirs['title'])
         title_data_only = title_data[['title_code', 'title']]
-
-        enquete_data_merged = pd.merge(enquete_data, title_data_only, left_on='title_1', right_on='title_code', suffixes=['', '_1'])\
-                                .drop(columns=['title_code', 'title_1'])\
-                                .rename(columns={'title': 'title_1'})
-        enquete_data_merged = pd.merge(enquete_data_merged, title_data_only, left_on='title_2', right_on='title_code', suffixes=['', '_2'])\
-                                .drop(columns=['title_code', 'title_2'])\
-                                .rename(columns={'title': 'title_2'})
-        enquete_data_merged = pd.merge(enquete_data_merged, title_data_only, left_on='title_3', right_on='title_code', suffixes=['', '_3'])\
-                                .drop(columns=['title_code', 'title_3'])\
-                                .rename(columns={'title': 'title_3'})
+        if dirs['paper']=='/home/data/enquete/raw/paper_enquete_data.csv':
+            enquete_data_merged = pd.merge(enquete_data, title_data_only, left_on='title_1', right_on='title_code', suffixes=['', '_1'])\
+                                    .drop(columns=['title_code', 'title_1'])\
+                                    .rename(columns={'title': 'title_1'})
+            enquete_data_merged = pd.merge(enquete_data_merged, title_data_only, left_on='title_2', right_on='title_code', suffixes=['', '_2'])\
+                                    .drop(columns=['title_code', 'title_2'])\
+                                    .rename(columns={'title': 'title_2'})
+            enquete_data_merged = pd.merge(enquete_data_merged, title_data_only, left_on='title_3', right_on='title_code', suffixes=['', '_3'])\
+                                    .drop(columns=['title_code', 'title_3'])\
+                                    .rename(columns={'title': 'title_3'})
         # 読み切りなどを削除 'year == @kEnqueteTargetYear'
         
         enquete_data_digital_filtered = enquete_data_digital.query('not age.str.contains("\|")')\
