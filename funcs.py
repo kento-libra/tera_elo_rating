@@ -163,7 +163,7 @@ def GenerateGroupList(agelist):
         grouplist.append('{} < age <= {} and gender == 2'.format(agelist[i],agelist[i+1]))
     return grouplist
 
-def print_graph(HR_paper, HR_digital, target='elo', whetherprint=True, appendix='',imgs_dir=kEnqueteEloImgBase):
+def print_graph(HR_paper, HR_digital, imgs_dir, target='elo', whetherprint=True, appendix=''):
     elo_vector=pd.DataFrame()
     if target=='elo':
         print_list=[HR_paper.elo_rating_paper_sheet,HR_digital.elo_rating_digital_sheet]
