@@ -139,8 +139,9 @@ def read_raw_csv(dirs,
         players = players.set_index('name')
         enquete_data_digital_filtered['issue']=(enquete_data_digital_filtered['year'].astype(str)+enquete_data_digital_filtered['issue'].astype(str).str.zfill(2)).astype(int)
         enquete_data_filtered['issue']=(enquete_data_filtered['year'].astype(str)+enquete_data_filtered['issue'].astype(str).str.zfill(2)).astype(int)
+        enquete_data_filtered=enquete_data_filtered.dropna(subset=['title_1','title_2','title_3'])
         #enquete_data_filtered['read_segment']=1
-        enquete_data_digital_filtered=enquete_data_digital_filtered.dropna(subset=['gender','age'])
+        enquete_data_digital_filtered=enquete_data_digital_filtered.dropna(subset=['title_1','title_2','title_3','gender','age'])
         enquete_data_digital_filtered=enquete_data_digital_filtered.replace({'gender':{'男性':1,'女性':2}})
         enquete_data_digital_filtered['age']=enquete_data_digital_filtered['age'].astype(int)
         if division is not 'All':
