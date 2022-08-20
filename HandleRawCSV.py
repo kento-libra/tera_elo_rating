@@ -86,12 +86,12 @@ class HandleRawCSV:
         else:
             self.elo_calc_list=pd.read_pickle('/home/data/enquete/work/tera/pickle/isWeight:False_numLoser:0_div:All_elo_calc_list_v1.pickle')
     
-    def automate(self,doMakeRef=False):
+    def automate(self,doMakeRef=False, ref_name=None):
         print('Calculating Elo Rating...')
         self.elo()
         if doMakeRef:
             print('Set Matrix as Reference')
-            self.MakeReference_v1()
+            self.MakeReference_v1(ref_name)
         self.SetReference()
         print('Calculating Voting Ratios...')
         self.votes()
