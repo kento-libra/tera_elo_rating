@@ -21,7 +21,7 @@ def dir_new():
     ComicSalses        = path.join(kEnqueteDirectoryRaw, 'タイトル巻数別売上資料.xlsx')
     DigitalEnqueteData = path.join(kEnqueteDirectoryRaw, 'デジタルアンケート2022年18号以降.csv')
     PaperEnqueteData   = path.join(kEnqueteDirectoryRaw, '紙アンケート5000件.csv')
-    TitleData          = path.join(kEnqueteDirectoryRaw, 'title_data.csv')
+    TitleData          = '/home/data/enquete/raw/title_data.csv'
     PickleBase ='/home/data/enquete/work/tera/pickle2/'
     ImgBase='/home/data/enquete/work/tera/imgs2/'
     return {'sales': ComicSalses,'digital':DigitalEnqueteData,'paper':PaperEnqueteData,\
