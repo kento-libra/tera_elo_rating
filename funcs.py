@@ -94,7 +94,7 @@ def read_raw_csv(dirs,
                 kEnqueteTitleMinimumIssue = 10):
     head_common ='isWeight:{}_numLoser:{}_div:{}_'.format(isWeightedByReadSegment, NumRandomLosers, division)
     print('Calculating: {}'.format(head_common))
-    if os.path.isfile(dirs['pickle'] + head_common + filtered_digital_name) and os.path.isfile(dirs['pickle'] + head_common + filtered_paper_name) and os.path.isfile(save_dir + head_common + issue_num_name):
+    if os.path.isfile(dirs['pickle'] + head_common + filtered_digital_name) and os.path.isfile(dirs['pickle'] + head_common + filtered_paper_name) and os.path.isfile(dirs['pickle'] + head_common + issue_num_name):
         enquete_data_digital_filtered = pd.read_pickle(dirs['pickle'] + head_common + filtered_digital_name)
         enquete_data_filtered = pd.read_pickle(dirs['pickle'] + head_common + filtered_paper_name)
         issue_num_list = np.load(dirs['pickle'] + head_common + issue_num_name)
