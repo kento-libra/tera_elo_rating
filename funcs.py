@@ -194,5 +194,5 @@ def print_graph(HR_paper, HR_digital, imgs_dir, target='elo', whetherprint=True,
     plt.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=5, fontsize=5)
     if whetherprint:
         save_file_name=imgs_dir+'isWeight:{}_numLoser:{}_paperdiv:{}_digital_div:{}_{}.png'.format(HR_paper.isWeightedByReadSegment, HR_paper.NumRandomLosers,HR_paper.division,HR_digital.division,appendix)
-        plt.savefig(save_file_name)
+        plt.savefig(save_file_name, format="png", dpi=300)
         print(save_file_name)
