@@ -186,6 +186,9 @@ def print_graph(HR_paper, HR_digital, imgs_dir, target='elo', whetherprint=True,
         plt.xlim([0,0.3])
         plt.ylim([0,0.3])
         plt.text(0.23,0.28,'r = {:5f}'.format(elo_corr))
+    plt.xlabel(target+' paper')
+    plt.ylabel(target+' digital')
+    plt.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=1, fontsize=18)
     for i in range(len(print_list[0].columns)):
         plt.scatter(print_list[0].iloc[:,i], print_list[1].iloc[:,i])
     if whetherprint:
