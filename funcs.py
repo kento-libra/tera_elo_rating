@@ -23,7 +23,7 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
     unique_list=pd.DataFrame(unique_list, columns=['list','issue'])
     for _, row in tqdm(enquete_data.iterrows(), total=enquete_data.shape[0]):
         i, t1, t2, t3, w = row['issue'], row['title_1'], row['title_2'], row['title_3'], 1 #int(row['read_segment']) if isWeightedByReadSegment else 1
-        results.extend(int(20000/len(enquete_data)+1)*[
+        results.extend([
             [i, t1, t2, w],
             [i, t2, t3, w],
             [i, t1, t3, w],

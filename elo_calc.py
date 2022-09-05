@@ -45,7 +45,8 @@ class elo_calc:
         result_sheet.fillna(0, inplace=True)
         for i in range(len(self.result)):
             result_sheet[self.result['win'][i]][self.result['lose'][i]]+=1
-        print(result_sheet)
+        for i in range(len(player_list)):
+            print(result_sheet[player_list[i]][player_list[i]])
         p=pd.Series([1.0]*len(player_list),index=player_list)
         p_n=pd.Series([1.0]*len(player_list),index=player_list)
         for _ in range(30):
