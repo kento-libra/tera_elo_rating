@@ -44,7 +44,7 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
     return results
 
 def CalcElo(results, issue_num_list):
-    results=results.query('name is not 1')
+    results=results.query('win is not 1 and lose is not 1')
     elo_rating = pd.DataFrame(columns = ['issue', 'name', 'rank', 'elo'])
     for issue in tqdm(issue_num_list):
         results_by_issue = results.query('issue == @issue')[['win', 'lose','weight']]
