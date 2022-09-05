@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import japanize_matplotlib
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 def win_rate(Ra,Rb):
     return 1/(10**((Rb-Ra)/400)+1)
@@ -13,6 +14,7 @@ class elo_calc:
         self.player = player
         self.player = self.player.set_index('name')
         self.result = result
+        #self.result_sheet
         self.player['elo']=1500.0
         self.history = self.player['elo']
         self.N = len(self.result.index)
@@ -35,7 +37,25 @@ class elo_calc:
                 self.const_step()
         #print(self.player)
         #print(self.history)
-
+    def fit2(self):
+        player_list=self.player['name']
+        result_sheet=pd.DataFrame(index=player_list,columns=player_list)
+        result_sheet.fillna(0, inplace=True)
+        for i in tqdm(range(len(self.result))):
+            result_sheet[self.result['win'][i]][self.result['lose'][i]]+=1
+        p=pd.Series([1.0]*len(player_list),index=player_list)
+        p_n=pd.Series([1.0]*len(player_list),index=player_list)
+        for _ in range(30):
+            for i in range(len(p)):
+                division=0.0
+                for j in range(len(p)):
+                    if i != j:
+                        division += (result_sheet[player_list[i]][player_list[j]]+result_sheet[player_list[j]][player_list[i]])/(p[i]+p[j])
+                p_n[i]=result_sheet[player_list[i]].sum()/division
+            p_n = p_n/p_n.sum()
+            p=p_n
+        elo_raw=400*np.log10(p_n)
+        self.player['elo']=1500+elo_raw-elo_raw.mean()
     def const_step(self):
         self.C/=2
         #print(self.C)
