@@ -38,7 +38,7 @@ class elo_calc:
         #print(self.player)
         #print(self.history)
     def fit2(self):
-        player_list=self.player['name']
+        player_list=self.player.index
         result_sheet=pd.DataFrame(index=player_list,columns=player_list)
         result_sheet.fillna(0, inplace=True)
         for i in tqdm(range(len(self.result))):
