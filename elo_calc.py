@@ -42,7 +42,7 @@ class elo_calc:
         player_list=self.player.index
         result_sheet=pd.DataFrame(index=player_list,columns=player_list)
         result_sheet.fillna(0, inplace=True)
-        for i in tqdm(range(len(self.result))):
+        for i in range(len(self.result)):
             result_sheet[self.result['win'][i]][self.result['lose'][i]]+=1
         p=pd.Series([1.0]*len(player_list),index=player_list)
         p_n=pd.Series([1.0]*len(player_list),index=player_list)
