@@ -39,7 +39,7 @@ class elo_calc:
         #print(self.history)
 
     def fit2(self):
-        player_list=self.player.index
+        player_list=self.player.index.tolist()
         print(player_list)
         result_sheet=pd.DataFrame(index=player_list,columns=player_list)
         result_sheet.fillna(0, inplace=True)
