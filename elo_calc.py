@@ -52,9 +52,9 @@ class elo_calc:
                 division=0.0
                 for j in range(len(p)):
                     if i != j:
-                        print('i={},j={}'.format(i,j))
-                        print(result_sheet[player_list[i]][player_list[j]])
-                        division += (result_sheet[player_list[i]][player_list[j]]+result_sheet[player_list[j]][player_list[i]])/(p[i]+p[j])
+                        #print('i={},j={}'.format(i,j))
+                        #print(result_sheet[player_list[i]][player_list[j]])
+                        division += (result_sheet[player_list[i]][player_list[j]]+result_sheet[player_list[j]][player_list[i]])/(p[player_list[i]]+p[player_list[j]])
                 p_n[i]=result_sheet[player_list[i]].sum()/division
             p_n = p_n/p_n.sum()
             p=p_n
