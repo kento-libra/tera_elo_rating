@@ -54,7 +54,7 @@ def CalcElo(results, issue_num_list):
         p_lose = results_by_issue.groupby('lose').groups.keys()
         p_weight = results_by_issue.groupby('weight').groups.keys()
         players_by_issue = pd.DataFrame(p_win | p_lose | p_weight, columns=['name']).query('name != 1')
-        print(players_by_issue)
+        #print(players_by_issue)
         # Elo ratingを求める
         elo = elo_calc.elo_calc(players_by_issue, results_by_issue)
         elo.fit2()
@@ -105,7 +105,7 @@ def read_raw_csv(dirs,
         enquete_data_digital = pd.read_csv(dirs['digital'])
         title_data = pd.read_csv(dirs['title'])
         title_data_only = title_data[['title_code', 'title']]
-        print(dirs['paper'])
+        #print(dirs['paper'])
         if dirs['paper']=='/home/data/enquete/work/tera/raw/paper_enquete_data.csv':
             enquete_data_merged = pd.merge(enquete_data, title_data_only, left_on='title_1', right_on='title_code', suffixes=['', '_1'])\
                                     .drop(columns=['title_code', 'title_1'])\
