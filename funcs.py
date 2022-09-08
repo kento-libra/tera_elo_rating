@@ -53,7 +53,7 @@ def CalcElo(results, issue_num_list):
         p_win = results_by_issue.groupby('win').groups.keys()
         p_lose = results_by_issue.groupby('lose').groups.keys()
         p_weight = results_by_issue.groupby('weight').groups.keys()
-        players_by_issue = pd.DataFrame(p_win | p_lose | p_weight, columns=['name'])
+        players_by_issue = pd.DataFrame(p_win | p_lose | p_weight, columns=['name']).query('name != 1')
         print(players_by_issue)
         # Elo ratingを求める
         elo = elo_calc.elo_calc(players_by_issue, results_by_issue)
