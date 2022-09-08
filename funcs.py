@@ -105,6 +105,7 @@ def read_raw_csv(dirs,
         enquete_data_digital = pd.read_csv(dirs['digital'])
         title_data = pd.read_csv(dirs['title'])
         title_data_only = title_data[['title_code', 'title']]
+        print(dirs['paper'])
         if dirs['paper']=='/home/data/enquete/work/tera/raw/paper_enquete_data.csv':
             enquete_data_merged = pd.merge(enquete_data, title_data_only, left_on='title_1', right_on='title_code', suffixes=['', '_1'])\
                                     .drop(columns=['title_code', 'title_1'])\
