@@ -29,11 +29,11 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
         unique_list.append([issue_unique_list,i])
     unique_list=pd.DataFrame(unique_list, columns=['list','issue'])
     for _, row in tqdm(enquete_data.iterrows(), total=enquete_data.shape[0]):
-        i, t1, t2, t3, w = row['issue'], row['title_1'], row['title_2'], row['title_3'], 1 #int(row['read_segment']) if isWeightedByReadSegment else 1
+        issue, t1, t2, t3, w = issue_list[i], row['title_1'], row['title_2'], row['title_3'], 1 #int(row['read_segment']) if isWeightedByReadSegment else 1
         results.extend([
-            [i, t1, t2, w],
-            [i, t2, t3, w],
-            [i, t1, t3, w],
+            [issue, t1, t2, w],
+            [issue, t2, t3, w],
+            [issue, t1, t3, w],
         ])
         if NumRandomLosers is 0:
             continue
@@ -43,9 +43,9 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
         random_loser_list = np.random.choice(random_loser_candidate, NumRandomLosers, replace=False)
         for j in range(NumRandomLosers):
             results.extend([
-            [i, t1, random_loser_list[j], w],
-            [i, t2, random_loser_list[j], w],
-            [i, t3, random_loser_list[j], w],
+            [issue, t1, random_loser_list[j], w],
+            [issue, t2, random_loser_list[j], w],
+            [issue, t3, random_loser_list[j], w],
             ])
     results = pd.DataFrame(results, columns=['issue', 'win', 'lose','weight'])
     return results
