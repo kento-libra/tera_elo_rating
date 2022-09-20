@@ -76,7 +76,7 @@ class HandleRawCSV:
             tmp_df.index=tmp_df['name']
             elo_rating_digital_frame = pd.concat([elo_rating_digital_frame, tmp_df['elo']],axis=1)
         elo_rating_digital_frame.columns=self.issue_num_list
-        elo_rating_digital_frame_filtered = elo_rating_digital_frame.drop(['マッシュル-MASHLE-']).T.dropna(axis=1,thresh=30)
+        elo_rating_digital_frame_filtered = elo_rating_digital_frame.T.dropna(axis=1,thresh=30)
         elo_calc_list=~elo_rating_digital_frame_filtered.interpolate(limit=2).isna()
         elo_calc_list.to_pickle(self.dirs['pickle'] + self.head_common + 'elo_calc_list_v1.pickle')
 
