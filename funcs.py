@@ -27,7 +27,7 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
         tmp=pd.concat([tmp,issue_clip['title_2']])
         tmp=pd.concat([tmp,issue_clip['title_3']])
         issue_unique_list=tmp.unique()
-        unique_list.append([issue_unique_list,i])
+        unique_list.append([issue_unique_list,issue_list[i]])
     unique_list=pd.DataFrame(unique_list, columns=['list','issue'])
     for _, row in tqdm(enquete_data.iterrows(), total=enquete_data.shape[0]):
         issue, t1, t2, t3, w = issue_list[i], row['title_1'], row['title_2'], row['title_3'], 1 #int(row['read_segment']) if isWeightedByReadSegment else 1
