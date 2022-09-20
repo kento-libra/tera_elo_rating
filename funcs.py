@@ -22,7 +22,7 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
             issue_target=[issue_list[i-1],issue_list[i]]
         else:
             issue_target=[issue_list[i-1],issue_list[i],issue_list[i+1]]
-        issue_clip=enquete_data.query('issue in @issue_target').loc[:,'title_1':'title_3']
+        issue_clip=enquete_data.query('issue in {}'.format(issue_target)).loc[:,'title_1':'title_3']
         tmp=issue_clip['title_1']
         tmp=pd.concat([tmp,issue_clip['title_2']])
         tmp=pd.concat([tmp,issue_clip['title_3']])
