@@ -13,8 +13,15 @@ import elo_calc
 def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
     results = []
     unique_list=[]
-    for i in enquete_data['issue'].unique():
-        issue_clip=enquete_data.query('issue == {}'.format(i)).loc[:,'title_1':'title_3']
+    issue_list=enquete_data['issue'].unique()
+    for i in range(len(issue_list)):
+        if i==0:
+            issue_target=[issue_list[i],issue_list[i+1]]
+        elif i==len(issue_list)-1:
+            issue_target=[issue_list[i-1],issue_list[i]]
+        else:
+            issue_target=[issue_list[i-1],issue_list[i],issue_list[i+1]]
+        issue_clip=enquete_data.query('issue in @issue_target').loc[:,'title_1':'title_3']
         tmp=issue_clip['title_1']
         tmp=pd.concat([tmp,issue_clip['title_2']])
         tmp=pd.concat([tmp,issue_clip['title_3']])
