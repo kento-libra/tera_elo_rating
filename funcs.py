@@ -14,7 +14,7 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
     results = []
     unique_list=[]
     issue_list=enquete_data['issue'].unique()
-    
+    np.sort(issue_list)
     for i in range(len(issue_list)):
         if i==0:
             issue_target=[issue_list[i],issue_list[i+1]]
