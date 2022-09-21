@@ -16,14 +16,8 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
     issue_list=enquete_data['issue'].unique()
     issue_list=np.sort(issue_list)
     for i in range(len(issue_list)):
-        if i==0:
-            issue_target=[issue_list[i],issue_list[i+1]]
-        elif i==len(issue_list)-1:
-            issue_target=[issue_list[i-1],issue_list[i]]
-        else:
-            issue_target=[issue_list[i-1],issue_list[i],issue_list[i+1]]
         #print('issue in {}'.format(issue_target))
-        issue_clip=enquete_data.query('issue in {}'.format(issue_target)).loc[:,'title_1':'title_3']
+        issue_clip=enquete_data.query('issue == {}'.format(issue_list[i])).loc[:,'title_1':'title_3']
         print(issue_clip)
         tmp=issue_clip['title_1']
         tmp=pd.concat([tmp,issue_clip['title_2']])
@@ -32,7 +26,7 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
         unique_list.append([issue_unique_list,issue_list[i]])
     unique_list=pd.DataFrame(unique_list, columns=['list','issue'])
     for _, row in tqdm(enquete_data.iterrows(), total=enquete_data.shape[0]):
-        issue, t1, t2, t3, w = issue_list[i], row['title_1'], row['title_2'], row['title_3'], 1 #int(row['read_segment']) if isWeightedByReadSegment else 1
+        issue, t1, t2, t3, w = row['issue'], row['title_1'], row['title_2'], row['title_3'], 1 #int(row['read_segment']) if isWeightedByReadSegment else 1
         results.extend([
             [issue, t1, t2, w],
             [issue, t2, t3, w],
