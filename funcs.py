@@ -18,7 +18,7 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
     for i in range(len(issue_list)):
         #print('issue in {}'.format(issue_target))
         issue_clip=enquete_data.query('issue == {}'.format(issue_list[i])).loc[:,'title_1':'title_3']
-        print(issue_clip)
+        #print(issue_clip)
         tmp=issue_clip['title_1']
         tmp=pd.concat([tmp,issue_clip['title_2']])
         tmp=pd.concat([tmp,issue_clip['title_3']])
@@ -50,8 +50,16 @@ def TranslateResult(enquete_data,isWeightedByReadSegment,NumRandomLosers):
 def CalcElo(results, issue_num_list):
     results=results.query('win != 1 and lose != 1')
     elo_rating = pd.DataFrame(columns = ['issue', 'name', 'rank', 'elo'])
-    for issue in tqdm(issue_num_list):
-        results_by_issue = results.query('issue == @issue')[['win', 'lose','weight']]
+    issue_num_list=np.sort(issue_num_list)
+    
+    for i in tqdm(range(len(issue_num_list))):
+        if i==0:
+            issue_target=[issue_num_list[i],issue_num_list[i+1]]
+        elif i==len(issue_num_list)-1:
+            issue_target=[issue_num_list[i],issue_num_list[i-1]]
+        else:
+            issue_target=[issue_num_list[i],issue_num_list[i-1],issue_num_list[i+1]]
+        results_by_issue = results.query('issue in {}'.format(issue_target))[['win', 'lose','weight']]
         results_by_issue.reset_index(drop=True, inplace=True)
         # アンケートに登場するタイトルを抽出
         p_win = results_by_issue.groupby('win').groups.keys()
@@ -66,7 +74,7 @@ def CalcElo(results, issue_num_list):
         res = elo.player
         res['rank'] = res['elo'].rank(ascending=False, method='min')
         # 週ごとのデータに追加
-        res['issue'] = issue
+        res['issue'] = issue_num_list[i]
         res.reset_index(inplace=True)
         res = res[['issue', 'name', 'rank', 'elo']]
         elo_rating = elo_rating.append(res, ignore_index=True)
