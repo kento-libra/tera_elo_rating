@@ -182,7 +182,7 @@ def GenerateGroupList(agelist):
     return grouplist
 
 def print_graph(HR_paper, HR_digital, imgs_dir, target='elo', whetherprint=True, appendix=''):
-    label_marker=pd.read_csv('/home/data/enquete/work/tera/raw/label_marker.csv')
+    label_marker=pd.read_csv('/home/data/enquete/work/tera/raw/label_marker.csv', index_col=0)
     print(label_marker)
     elo_vector=pd.DataFrame()
     if target=='elo':
