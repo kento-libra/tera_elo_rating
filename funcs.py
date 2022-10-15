@@ -209,7 +209,8 @@ def print_graph(HR_paper, HR_digital, imgs_dir, target='elo', whetherprint=True,
     for i in range(len(print_list[0].columns)):
         label_name=print_list[0].iloc[:,i].name
         print(label_name)
-        plt.scatter(print_list[0].iloc[:,i], print_list[1].iloc[:,i], label=label_name, marker=label_marker[label_name]['m'], color=label_marker[label_name]['c'] )
+        color_name=np.array(label_marker[label_name]['c'][1:-1].split(' ')).astype('float')
+        plt.scatter(print_list[0].iloc[:,i], print_list[1].iloc[:,i], label=label_name, marker=label_marker[label_name]['m'], color=color_name )
     plt.legend(bbox_to_anchor=(1, 0), loc='lower right', borderaxespad=1, fontsize=5)
     if whetherprint:
         save_file_name=imgs_dir+'isWeight:{}_numLoser:{}_paperdiv:{}_digital_div:{}_{}.png'.format(HR_paper.isWeightedByReadSegment, HR_paper.NumRandomLosers,HR_paper.division,HR_digital.division,appendix)
