@@ -182,6 +182,7 @@ def GenerateGroupList(agelist):
     return grouplist
 
 def print_graph(HR_paper, HR_digital, imgs_dir, target='elo', whetherprint=True, appendix=''):
+    label_marker=pd.read_csv('/home/data/enquete/work/tera/raw/label_marker.csv')
     elo_vector=pd.DataFrame()
     if target=='elo':
         print_list=[HR_paper.elo_rating_paper_sheet,HR_digital.elo_rating_digital_sheet]
@@ -205,7 +206,8 @@ def print_graph(HR_paper, HR_digital, imgs_dir, target='elo', whetherprint=True,
     plt.ylabel(target+' digital')
     
     for i in range(len(print_list[0].columns)):
-        plt.scatter(print_list[0].iloc[:,i], print_list[1].iloc[:,i], label=print_list[0].iloc[:,i].name)
+        label_name=print_list[0].iloc[:,i].name
+        plt.scatter(print_list[0].iloc[:,i], print_list[1].iloc[:,i], label=label_name, marker=label_marker[label_name]['m'], color=label_marker[label_name]['c'] )
     plt.legend(bbox_to_anchor=(1, 0), loc='lower right', borderaxespad=1, fontsize=5)
     if whetherprint:
         save_file_name=imgs_dir+'isWeight:{}_numLoser:{}_paperdiv:{}_digital_div:{}_{}.png'.format(HR_paper.isWeightedByReadSegment, HR_paper.NumRandomLosers,HR_paper.division,HR_digital.division,appendix)
