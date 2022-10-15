@@ -209,7 +209,7 @@ def print_graph(HR_paper, HR_digital, imgs_dir, target='elo', whetherprint=True,
     
     for i in range(len(print_list[0].columns)):
         label_name=print_list[0].iloc[:,i].name
-        print(label_name)
+        #print(label_name)
         color_name=np.array(re.split(' +',label_marker[label_name]['c'][1:-1])[:3]).astype('float')
         plt.scatter(print_list[0].iloc[:,i], print_list[1].iloc[:,i], label=label_name, marker=label_marker[label_name]['m'], color=color_name )
     plt.legend(bbox_to_anchor=(1, 0), loc='lower right', borderaxespad=1, fontsize=5)
