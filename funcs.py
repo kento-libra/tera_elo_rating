@@ -70,7 +70,7 @@ def CalcElo(results, issue_num_list):
         #print(players_by_issue)
         # Elo ratingを求める
         elo = elo_calc.elo_calc(players_by_issue, results_by_issue)
-        elo.fit()
+        elo.fit2()
         # ランキングの計算
         res = elo.player
         res['rank'] = res['elo'].rank(ascending=False, method='min')
