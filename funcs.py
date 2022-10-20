@@ -54,12 +54,8 @@ def CalcElo(results, issue_num_list):
     issue_num_list=np.sort(issue_num_list)
     
     for i in tqdm(range(len(issue_num_list))):
-        if i==0:
-            issue_target=[issue_num_list[i],issue_num_list[i+1]]
-        elif i==len(issue_num_list)-1:
-            issue_target=[issue_num_list[i],issue_num_list[i-1]]
-        else:
-            issue_target=[issue_num_list[i],issue_num_list[i-1],issue_num_list[i+1]]
+        stride=3
+        issue_target=issue_num_list[max(0,i):min(len(issue_num_list)-1, i+stride)]
         results_by_issue = results.query('issue in {}'.format(issue_target))[['win', 'lose','weight']]
         results_by_issue.reset_index(drop=True, inplace=True)
         # アンケートに登場するタイトルを抽出
