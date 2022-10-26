@@ -56,8 +56,8 @@ class HandleRawCSV:
         votes_paper_dir=self.dirs['pickle'] + self.head_common + 'votes_paper.pickle'
         votes_digital_dir=self.dirs['pickle'] + self.head_common + 'votes_digital.pickle'
         if os.path.isfile(votes_paper_dir) and os.path.isfile(votes_digital_dir):
-            self.votes_paper=pd.read_pickle(votes_paper_dir)
-            self.votes_digital=pd.read_pickle(votes_digital_dir)
+            self.votes_paper=pd.read_pickle(votes_paper_dir)[self.elo_calc_list]
+            self.votes_digital=pd.read_pickle(votes_digital_dir)[self.elo_calc_list]
         else:
             self.votes_paper=fn.CalcVotes(self.enquete_data_paper_filtered, self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
             self.votes_digital=fn.CalcVotes(self.enquete_data_digital_filtered, self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
