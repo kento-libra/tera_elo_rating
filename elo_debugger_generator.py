@@ -22,7 +22,7 @@ def main():
     player['name']=['キメツの刃','呪術回線','ヒロアカ']
     player.to_csv('player.csv',index=False)
     result=pd.DataFrame(columns=['win','lose'])
-    result_len=1000
+    result_len=1000000
     #result=result.append(pd.Series(['キメツの刃','ヒロアカ'],index=result.columns),ignore_index=True)
     player['elo']=1500
     player = player.set_index('name')

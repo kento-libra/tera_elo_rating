@@ -43,8 +43,8 @@ class HandleRawCSV:
     def EloSheet(self):
         if os.path.isfile(self.dirs['pickle'] + self.head_common + 'elo_paper_sheet.pickle')\
             and os.path.isfile(self.dirs['pickle'] + self.head_common +'elo_digital_sheet.pickle'):
-            self.elo_rating_paper_sheet=pd.read_pickle(self.dirs['pickle'] + self.head_common + 'elo_paper_sheet.pickle')
-            self.elo_rating_digital_sheet=pd.read_pickle(self.dirs['pickle'] + self.head_common + 'elo_digital_sheet.pickle')
+            self.elo_rating_paper_sheet=pd.read_pickle(self.dirs['pickle'] + self.head_common + 'elo_paper_sheet.pickle')[self.elo_calc_list]
+            self.elo_rating_digital_sheet=pd.read_pickle(self.dirs['pickle'] + self.head_common + 'elo_digital_sheet.pickle')[self.elo_calc_list]
         else:
             self.elo_rating_paper_sheet=fn.EloToSheet(self.elo_rating_paper,self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
             self.elo_rating_digital_sheet=fn.EloToSheet(self.elo_rating_digital,self.issue_num_list).reindex(columns=self.elo_calc_list.columns).interpolate(limit_direction='both')[self.elo_calc_list]
